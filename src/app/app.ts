@@ -1,1 +1,3 @@
-console.log('app')
+import { getConfig } from 'config'
+
+getConfig('app', 'port')
