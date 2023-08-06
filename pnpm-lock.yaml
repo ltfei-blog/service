@@ -4,69 +4,105 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
-  express:
-    specifier: ^4.18.2
-    version: 4.18.2
-  yaml:
-    specifier: ^2.3.1
-    version: 2.3.1
+importers:
 
-devDependencies:
-  '@commitlint/cli':
-    specifier: ^17.6.5
-    version: 17.6.5
-  '@commitlint/config-angular':
-    specifier: ^17.6.5
-    version: 17.6.5
-  '@commitlint/cz-commitlint':
-    specifier: ^17.5.0
-    version: 17.5.0(commitizen@4.3.0)(inquirer@8.2.6)
-  '@types/express':
-    specifier: ^4.17.17
-    version: 4.17.17
-  '@types/node':
-    specifier: ^20.4.0
-    version: 20.4.0
-  '@types/webpack-node-externals':
-    specifier: ^3.0.0
-    version: 3.0.0(webpack-cli@5.1.4)
-  commitizen:
-    specifier: ^4.3.0
-    version: 4.3.0
-  husky:
-    specifier: ^8.0.0
-    version: 8.0.0
-  lint-staged:
-    specifier: ^13.2.2
-    version: 13.2.2
-  nodemon:
-    specifier: ^2.0.22
-    version: 2.0.22
-  prettier:
-    specifier: ^3.0.0
-    version: 3.0.0
-  ts-loader:
-    specifier: ^9.4.4
-    version: 9.4.4(typescript@5.1.6)(webpack@5.88.1)
-  ts-node:
-    specifier: ^10.9.1
-    version: 10.9.1(@types/node@20.4.0)(typescript@5.1.6)
-  tsconfig-paths:
-    specifier: ^4.2.0
-    version: 4.2.0
-  typescript:
-    specifier: ^5.1.6
-    version: 5.1.6
-  webpack:
-    specifier: ^5.88.1
-    version: 5.88.1(webpack-cli@5.1.4)
-  webpack-cli:
-    specifier: ^5.1.4
-    version: 5.1.4(webpack@5.88.1)
-  webpack-node-externals:
-    specifier: ^3.0.0
-    version: 3.0.0
+  .:
+    dependencies:
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
+      yaml:
+        specifier: ^2.3.1
+        version: 2.3.1
+    devDependencies:
+      '@commitlint/cli':
+        specifier: ^17.6.5
+        version: 17.6.5
+      '@commitlint/config-angular':
+        specifier: ^17.6.5
+        version: 17.6.5
+      '@commitlint/cz-commitlint':
+        specifier: ^17.5.0
+        version: 17.5.0(commitizen@4.3.0)(inquirer@8.2.6)
+      '@types/express':
+        specifier: ^4.17.17
+        version: 4.17.17
+      '@types/node':
+        specifier: ^20.4.0
+        version: 20.4.0
+      commitizen:
+        specifier: ^4.3.0
+        version: 4.3.0
+      husky:
+        specifier: ^8.0.0
+        version: 8.0.0
+      lint-staged:
+        specifier: ^13.2.2
+        version: 13.2.2
+      nodemon:
+        specifier: ^2.0.22
+        version: 2.0.22
+      prettier:
+        specifier: ^3.0.0
+        version: 3.0.0
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.1(@types/node@20.4.0)(typescript@5.1.6)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
+
+  build:
+    devDependencies:
+      '@types/webpack-node-externals':
+        specifier: ^3.0.0
+        version: 3.0.0(webpack-cli@5.1.4)
+      ts-loader:
+        specifier: ^9.4.4
+        version: 9.4.4(typescript@5.1.6)(webpack@5.88.1)
+      webpack:
+        specifier: ^5.88.1
+        version: 5.88.1(webpack-cli@5.1.4)
+      webpack-cli:
+        specifier: ^5.1.4
+        version: 5.1.4(webpack@5.88.1)
+      webpack-node-externals:
+        specifier: ^3.0.0
+        version: 3.0.0
+
+  packages/app:
+    dependencies:
+      '@ltfei-blog/service-app':
+        specifier: workspace:^
+        version: 'link:'
+      '@ltfei-blog/service-config':
+        specifier: workspace:^
+        version: link:../config
+      '@ltfei-blog/service-db':
+        specifier: workspace:^
+        version: link:../db
+      '@ltfei-blog/service-permission':
+        specifier: workspace:^
+        version: link:../permission
+      '@ltfei-blog/service-router':
+        specifier: workspace:^
+        version: link:../routers
+      '@ltfei-blog/service-utils':
+        specifier: workspace:^
+        version: link:../utils
+
+  packages/config: {}
+
+  packages/db: {}
+
+  packages/permission: {}
+
+  packages/routers: {}
+
+  packages/utils: {}
 
 packages:
 
@@ -381,12 +417,12 @@ packages:
   /@types/eslint-scope@3.7.4:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
-      '@types/eslint': 8.44.1
+      '@types/eslint': 8.44.2
       '@types/estree': 1.0.1
     dev: true
 
-  /@types/eslint@8.44.1:
-    resolution: {integrity: sha512-XpNDc4Z5Tb4x+SW1MriMVeIsMoONHCkWFMkR/aPJbzEsxqHy+4Glu/BqTdPrApfDeMaXbtNh6bseNgl5KaWrSg==}
+  /@types/eslint@8.44.2:
+    resolution: {integrity: sha512-sdPRb9K6iL5XZOmBubg8yiFp5yS/JdUDQsq5e6h95km91MCYMuvp7mh1fjPEYUhvHepKpZOjnEaMBR4PxjWDzg==}
     dependencies:
       '@types/estree': 1.0.1
       '@types/json-schema': 7.0.12
@@ -836,8 +872,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001518
-      electron-to-chromium: 1.4.480
+      caniuse-lite: 1.0.30001519
+      electron-to-chromium: 1.4.485
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
     dev: true
@@ -889,8 +925,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite@1.0.30001518:
-    resolution: {integrity: sha512-rup09/e3I0BKjncL+FesTayKtPrdwKhUufQFd3riFw1hHg8JmIFoInYfB102cFcY/pPgGmdyl/iy+jgiDi2vdA==}
+  /caniuse-lite@1.0.30001519:
+    resolution: {integrity: sha512-0QHgqR+Jv4bxHMp8kZ1Kn8CH55OikjKJ6JmKkZYP1F3D7w+lnFXF70nG5eNfsZS89jadi5Ywy5UCSKLAglIRkg==}
     dev: true
 
   /chalk@2.4.2:
@@ -1273,8 +1309,8 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: false
 
-  /electron-to-chromium@1.4.480:
-    resolution: {integrity: sha512-IXTgg+bITkQv/FLP9FjX6f9KFCs5hQWeh5uNSKxB9mqYj/JXhHDbu+ekS43LVvbkL3eW6/oZy4+r9Om6lan1Uw==}
+  /electron-to-chromium@1.4.485:
+    resolution: {integrity: sha512-1ndQ5IBNEnFirPwvyud69GHL+31FkE09gH/CJ6m3KCbkx3i0EVOrjwz4UNxRmN9H8OVHbC6vMRZGN1yCvjSs9w==}
     dev: true
 
   /emoji-regex@8.0.0:

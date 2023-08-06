@@ -1,0 +1,12 @@
+{
+  "name": "@ltfei-blog/service-utils",
+  "type": "module",
+  "dependencies": {
+    "@ltfei-blog/service-app": "workspace:^",
+    "@ltfei-blog/service-config": "workspace:^",
+    "@ltfei-blog/service-db": "workspace:^",
+    "@ltfei-blog/service-permission": "workspace:^",
+    "@ltfei-blog/service-router": "workspace:^",
+    "@ltfei-blog/service-utils": "workspace:^"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@ltfei-blog/service-build",
+  "devDependencies": {
+    "@types/webpack-node-externals": "^3.0.0",
+    "ts-loader": "^9.4.4",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
+  }
+}
