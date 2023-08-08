@@ -5,11 +5,7 @@ const sqlType = await getConfig('sql', 'type')
 
 const connect = async () => {
   if (sqlType == 'mysql') {
-    const database = await getConfig('mysql', 'database')
-    const host = await getConfig('mysql', 'host')
-    const password = await getConfig('mysql', 'password')
-    const port = await getConfig('mysql', 'port')
-    const username = await getConfig('mysql', 'username')
+    const { database, host, password, port, username } = await getConfig('mysql')
     return new Sequelize({
       dialect: 'mysql',
       database,
