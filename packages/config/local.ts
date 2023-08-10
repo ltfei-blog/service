@@ -1,5 +1,5 @@
 import { parse } from 'yaml'
-import { readFileSync, existsSync, writeFileSync } from 'fs'
+import { readFileSync, existsSync, writeFileSync } from 'node:fs'
 
 const CONFIG_PATH = 'config.yml'
 const DEFAULT_CONFIG_TEXT = `app:

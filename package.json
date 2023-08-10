@@ -2,7 +2,6 @@
   "name": "@ltfei-blog/service",
   "version": "0.0.1",
   "description": "",
-  "main": "src/app/app.ts",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky install",
@@ -10,7 +9,7 @@
     "format": "prettier --write --cache .",
     "dev": "nodemon -x node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm packages/app/app.ts",
     "start": "ts-node-esm --experimental-specifier-resolution=node packages/app/app.ts",
-    "build": "webpack"
+    "build": "pnpm -C build exec webpack"
   },
   "keywords": [],
   "author": "ltfei<ltfei@ltfei.cn>",
