@@ -3,6 +3,7 @@ export interface Config {
     port: number
     host: string
     cros: string
+    baseUrl: string
   }
   sql: {
     type: 'mysql' | 'sqlite'
