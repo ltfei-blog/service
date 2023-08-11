@@ -1,4 +1,4 @@
-import { sequelize } from '../index'
+import { sequelize } from '../connect'
 import { DataTypes } from 'sequelize'
 
 export const Users = sequelize.define(
@@ -7,11 +7,11 @@ export const Users = sequelize.define(
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
+      unique: true
     },
     username: {
-      type: DataTypes.CHAR,
-      primaryKey: true
+      type: DataTypes.CHAR
     },
     password: DataTypes.CHAR,
     avatar: DataTypes.CHAR,
@@ -25,15 +25,15 @@ export const Users = sequelize.define(
     // 第三方平台登录
     wx_openid: {
       type: DataTypes.CHAR,
-      primaryKey: true
+      unique: true
     },
     wx_unionid: {
       type: DataTypes.CHAR,
-      primaryKey: true
+      unique: true
     },
     qq_openid: {
       type: DataTypes.CHAR,
-      primaryKey: true
+      unique: true
     }
   },
   {

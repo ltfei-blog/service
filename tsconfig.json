@@ -15,5 +15,6 @@
     "skipLibCheck": true
     // "paths": {}
   },
-  "include": ["packages/**/*"]
+  "include": ["packages/**/*"],
+  "exclude": ["**/node_modules/**/*"]
 }

@@ -1,5 +1,6 @@
 import { getConfig } from '@ltfei-blog/service-config/index'
 import express from 'express'
+import '@ltfei-blog/service-db'
 
 const { port, baseUrl } = await getConfig('app')
 const app = express()
