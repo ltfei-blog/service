@@ -1,1 +1,2 @@
-export default 'db'
+export { sequelize } from './connect'
+export * from './tables/users'
