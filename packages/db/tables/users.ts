@@ -7,8 +7,7 @@ export const Users = sequelize.define(
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
-      unique: true
+      autoIncrement: true
     },
     username: {
       type: DataTypes.CHAR
@@ -17,26 +16,29 @@ export const Users = sequelize.define(
     avatar: DataTypes.CHAR,
     city: DataTypes.CHAR(50),
     gender: DataTypes.INTEGER,
-    register_date: DataTypes.TIME,
-    last_login_date: DataTypes.TIME,
+    register_date: DataTypes.DATE,
+    last_login_date: DataTypes.DATE,
     register_ip: DataTypes.CHAR,
     status: DataTypes.INTEGER,
     avatar_pendant: DataTypes.CHAR,
     // 第三方平台登录
     wx_openid: {
-      type: DataTypes.CHAR,
-      unique: true
+      type: DataTypes.CHAR
     },
     wx_unionid: {
-      type: DataTypes.CHAR,
-      unique: true
+      type: DataTypes.CHAR
     },
     qq_openid: {
-      type: DataTypes.CHAR,
-      unique: true
+      type: DataTypes.CHAR
     }
   },
   {
-    timestamps: false
+    timestamps: false,
+    indexes: [
+      {
+        fields: ['id', 'wx_openid', 'wx_unionid', 'qq_openid'],
+        unique: true
+      }
+    ]
   }
 )

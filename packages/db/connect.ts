@@ -12,13 +12,15 @@ const connect = async () => {
       host,
       password,
       port,
-      username
+      username,
+      timezone: '+08:00'
     })
   } else if (sqlType == 'sqlite') {
     const storage = await getConfig('sqlite', 'storage')
     return new Sequelize({
       dialect: 'sqlite',
-      storage
+      storage,
+      timezone: '+08:00'
     })
   }
 }
