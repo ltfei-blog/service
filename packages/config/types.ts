@@ -4,6 +4,7 @@ export interface Config {
     host: string
     cros: string
     baseUrl: string
+    jwtSecret: string
   }
   sql: {
     type: 'mysql' | 'sqlite'
