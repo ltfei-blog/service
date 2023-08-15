@@ -32,8 +32,8 @@ log4js.configure({
       level: 'info'
     },
     db: {
-      appenders: ['current', 'out', 'db'],
-      level: 'error'
+      appenders: ['db'],
+      level: 'all'
     }
   }
 })
