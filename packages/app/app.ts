@@ -4,6 +4,7 @@ import router from '@ltfei-blog/service-router'
 import bodyParser from 'body-parser'
 import { expressjwt as jwt } from 'express-jwt'
 import jwtUnless from './jwtUnless'
+import { app as logger } from '@ltfei-blog/service-utils/log'
 
 const { port, baseUrl, jwtSecret } = await getConfig('app')
 const app = express()
@@ -63,5 +64,5 @@ app.all(baseUrl, (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`http://localhost:${port}`)
+  logger.info(`http://localhost:${port}`)
 })
