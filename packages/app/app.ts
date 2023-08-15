@@ -3,6 +3,7 @@ import express from 'express'
 import router from '@ltfei-blog/service-router'
 import bodyParser from 'body-parser'
 import { expressjwt as jwt } from 'express-jwt'
+import jwtUnless from './jwtUnless'
 
 const { port, baseUrl, jwtSecret } = await getConfig('app')
 const app = express()
@@ -22,6 +23,8 @@ app.use(
       }
       return null
     }
+  }).unless({
+    path: jwtUnless
   })
 )
 

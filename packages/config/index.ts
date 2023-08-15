@@ -22,5 +22,7 @@ export const getConfig: GetConfig = async <
   }
   if (localConfig[key][name]) {
     return localConfig[key][name]
+  } else if (defaultConfig[key][name]) {
+    return defaultConfig[key][name]
   }
 }
