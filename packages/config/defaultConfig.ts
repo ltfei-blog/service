@@ -5,6 +5,17 @@ export default <Config>{
     port: 3000,
     baseUrl: '/'
   },
+  login_method: {
+    qq_connect: {
+      enable: false
+    },
+    wx_open: {
+      enable: false
+    },
+    wx_miniprogram: {
+      enable: false
+    }
+  },
   sql: {
     type: 'sqlite'
   },

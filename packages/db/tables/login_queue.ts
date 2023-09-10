@@ -13,6 +13,11 @@ export const LoginQueue = sequelize.define(
       type: DataTypes.UUID
     },
     /**
+     * 登录后的回调地址
+     * todo: 增加验证域名是否合法
+     */
+    url: DataTypes.CHAR,
+    /**
      * - 0: 未登录
      * - 1: 已扫码
      * - 10: 登录成功

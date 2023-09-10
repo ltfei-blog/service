@@ -18,11 +18,13 @@ export const getConfig: GetConfig = async <
   name?: K
 ): Promise<Config[T][K] | Config[T]> => {
   if (!name) {
-    return { ...localConfig[key], ...defaultConfig[key] }
+    return { ...defaultConfig[key], ...localConfig[key] }
+  }
+  // todo: 修改匹配顺序
+  if (!localConfig[key] || !localConfig[key][name]) {
+    return defaultConfig[key][name]
   }
   if (localConfig[key][name]) {
     return localConfig[key][name]
-  } else if (defaultConfig[key][name]) {
-    return defaultConfig[key][name]
   }
 }

@@ -6,6 +6,20 @@ export interface Config {
     baseUrl: string
     jwtSecret: string
   }
+  login_method: {
+    qq_connect: {
+      enable: boolean
+      appid: string
+      appkey: string
+      redirect_uri: string
+    }
+    wx_open: {
+      enable: boolean
+    }
+    wx_miniprogram: {
+      enable: boolean
+    }
+  }
   sql: {
     type: 'mysql' | 'sqlite'
   }

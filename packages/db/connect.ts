@@ -21,8 +21,7 @@ const connect = async () => {
     const storage = await getConfig('sqlite', 'storage')
     return new Sequelize({
       dialect: 'sqlite',
-      storage,
-      timezone: '+08:00'
+      storage
     })
   }
 }
