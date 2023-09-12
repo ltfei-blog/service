@@ -2,7 +2,7 @@ export interface Config {
   app: {
     port: number
     host: string
-    cros: string
+    cors: string
     baseUrl: string
     jwtSecret: string
   }

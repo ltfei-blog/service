@@ -3,6 +3,7 @@ import { Config } from './types'
 export default <Config>{
   app: {
     port: 3000,
+    cors: '*',
     baseUrl: '/'
   },
   login_method: {

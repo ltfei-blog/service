@@ -5,9 +5,17 @@ import bodyParser from 'body-parser'
 import { expressjwt as jwt } from 'express-jwt'
 import jwtUnless from './jwtUnless'
 import { app as logger } from '@ltfei-blog/service-utils/log'
+import cors from 'cors'
 
-const { port, baseUrl, jwtSecret } = await getConfig('app')
+const { port, baseUrl, jwtSecret, cors: corsOrigin } = await getConfig('app')
 const app = express()
+
+// cors
+app.use(
+  cors({
+    origin: corsOrigin
+  })
+)
 
 // jwt
 app.use(
