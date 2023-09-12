@@ -46,6 +46,10 @@ router.get('/init', async (req, res) => {
   })
 })
 
+/**
+ * 获取 qq 互联登录地址
+ * 请求时需要携带上一步获取的uuid
+ */
 router.get('/qqConnect', async (req, res) => {
   const { uuid } = req.body
   // todo: 数据库验证uuid是否存在/过期
@@ -54,12 +58,20 @@ router.get('/qqConnect', async (req, res) => {
     return res.send({ status: 403 })
   }
   const { appid, redirect_uri } = qqConnect
-  // todo: redirect_uri urlencode
-  const qqLoginUrl = `https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=${appid}&redirect_uri=${redirect_uri}&state=${uuid}`
+
+  const qqLoginUrl: string[] = [
+    'https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=',
+    appid,
+    '&redirect_uri=',
+    encodeURIComponent(redirect_uri),
+    '&state=',
+    uuid
+  ]
+
   res.send({
     status: 200,
     data: {
-      qqLoginUrl
+      qqLoginUrl: qqLoginUrl.join('')
     }
   })
 })
