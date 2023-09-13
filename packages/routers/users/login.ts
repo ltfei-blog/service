@@ -50,7 +50,7 @@ router.get('/init', async (req, res) => {
  * 获取 qq 互联登录地址
  * 请求时需要携带上一步获取的uuid
  */
-router.get('/qqConnect', async (req, res) => {
+router.post('/qqConnect', async (req, res) => {
   const { uuid } = req.body
   // todo: 数据库验证uuid是否存在/过期
   const qqConnect = await getConfig('login_method', 'qq_connect')

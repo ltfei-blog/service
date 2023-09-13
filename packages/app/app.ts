@@ -57,6 +57,7 @@ app.use(
 
 // req.body
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // status message
 app.get(baseUrl, (req, res) => {
