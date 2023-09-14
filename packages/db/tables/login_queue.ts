@@ -1,7 +1,15 @@
 import { sequelize } from '../connect'
-import { DataTypes } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 
-export const LoginQueue = sequelize.define(
+type Table = {
+  id: number
+  uuid: string
+  url: string
+  status: number
+  date: Date
+}
+
+export const LoginQueue = sequelize.define<Model<Table, Table>, Table>(
   'login_queue',
   {
     id: {
@@ -20,6 +28,7 @@ export const LoginQueue = sequelize.define(
     /**
      * - 0: 未登录
      * - 1: 已扫码
+     * - 2: 已创建登录地址
      * - 10: 登录成功
      * - 20: 登录失败(用户取消登录)
      * - 21: 登录失败(其他原因)
