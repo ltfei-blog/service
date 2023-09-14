@@ -1,4 +1,4 @@
-import { LoginQueue } from '@ltfei-blog/service-db'
+import { LoginQueue, loginStatus } from '@ltfei-blog/service-db'
 import { getConfig } from '@ltfei-blog/service-config'
 import { Router } from 'express'
 import { v4 as uuidV4 } from 'uuid'
@@ -25,7 +25,7 @@ router.get('/init', async (req, res) => {
 
   const uuid = uuidV4()
   await LoginQueue.create({
-    status: 0,
+    status: loginStatus.notLogin,
     date: new Date(),
     url,
     uuid
@@ -46,7 +46,6 @@ router.get('/init', async (req, res) => {
  */
 router.post('/qqConnect', async (req, res) => {
   const { uuid } = req.body
-  // todo: 数据库验证uuid是否存在/过期
   const data = await LoginQueue.findOne({
     where: {
       uuid
@@ -59,13 +58,25 @@ router.post('/qqConnect', async (req, res) => {
     })
   }
 
-  const { status, date } = data.toJSON()
+  const { status, date, id } = data.toJSON()
   // todo: 过期时间配置项
-  if (status != 0 || Date.now() > date.valueOf() + 1000 * 60) {
+  if (status != loginStatus.notLogin || Date.now() > date.valueOf() + 1000 * 60) {
     return res.send({
       status: 403
     })
   }
+
+  // 修改状态值
+  await LoginQueue.update(
+    {
+      status: loginStatus.getQqConnectUrl
+    },
+    {
+      where: {
+        id
+      }
+    }
+  )
 
   const qqConnect = await getConfig('login_method', 'qq_connect')
   if (!qqConnect.enable) {
