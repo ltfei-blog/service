@@ -20,7 +20,7 @@ export const loginStatus = {
   loginFailedTimeout: 22
 }
 
-type Table = {
+export type Table = {
   id: number
   uuid: string
   url: string
