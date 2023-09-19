@@ -2,6 +2,8 @@ import { LoginQueue, loginStatus } from '@ltfei-blog/service-db'
 import { getConfig } from '@ltfei-blog/service-config'
 import { Router } from 'express'
 import { v4 as uuidV4 } from 'uuid'
+import axios from 'axios'
+import { QqConnectUserInfo } from '@ltfei-blog/service-router/types'
 
 const router = Router()
 
@@ -44,7 +46,7 @@ router.get('/init', async (req, res) => {
  * 获取 qq 互联登录地址
  * 请求时需要携带上一步获取的uuid
  */
-router.post('/qqConnect', async (req, res) => {
+router.post('/getQqConnectUrl', async (req, res) => {
   const { uuid } = req.body
   const data = await LoginQueue.findOne({
     where: {
@@ -88,7 +90,7 @@ router.post('/qqConnect', async (req, res) => {
     'https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=',
     appid,
     '&redirect_uri=',
-    encodeURIComponent(redirect_uri),
+    encodeURI(redirect_uri),
     '&state=',
     uuid
   ]
@@ -99,6 +101,56 @@ router.post('/qqConnect', async (req, res) => {
       qqLoginUrl: qqLoginUrl.join('')
     }
   })
+})
+
+/**
+ * 使用qq互联登录页面获取的authorizationCode和uuid登录
+ */
+router.post('/qqConnectLogin', async (req, res) => {
+  const { uuid, authorizationCode } = req.body
+  const { appkey, appid, redirect_uri } = await getConfig('login_method', 'qq_connect')
+
+  // todo: 验证uuid
+
+  /**
+   * 使用Authorization_Code获取Access_Token
+   * https://wiki.connect.qq.com/%e4%bd%bf%e7%94%a8authorization_code%e8%8e%b7%e5%8f%96access_token
+   */
+  const {
+    data: { access_token: accessToken, openid }
+  } = await axios<{
+    access_token: string
+    openid: string
+  }>({
+    url: 'https://graph.qq.com/oauth2.0/token',
+    method: 'GET',
+    params: {
+      grant_type: 'authorization_code',
+      client_id: appid,
+      client_secret: appkey,
+      code: authorizationCode,
+      redirect_uri,
+      fmt: 'json',
+      need_openid: 1
+    }
+  })
+
+  /**
+   * get_user_info 获取用户信息
+   * https://wiki.connect.qq.com/get_user_info
+   */
+  const { data } = await axios<QqConnectUserInfo>({
+    url: 'https://graph.qq.com/user/get_user_info',
+    method: 'GET',
+    params: {
+      access_token: accessToken,
+      oauth_consumer_key: appid,
+      openid
+    }
+  })
+
+  // todo: 增/查数据库
+  // todo: 生成token
 })
 
 export default router
