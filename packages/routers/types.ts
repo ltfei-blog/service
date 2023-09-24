@@ -1,3 +1,6 @@
+import type { Request } from 'express'
+import type { Table } from '@ltfei-blog/service-db'
+
 export interface QqConnectUserInfo {
   ret: number
   msg: string
@@ -33,4 +36,8 @@ export interface QqConnectUserInfo {
   yellow_vip_level: string
   level: string
   is_yellow_year_vip: string
+}
+
+export interface LoginRequest extends Request {
+  LoginQueue: Table
 }

@@ -1,7 +1,24 @@
 import { sequelize } from '../connect'
-import { DataTypes } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 
-export const Users = sequelize.define(
+type Table = {
+  id: number
+  username: string
+  password: string
+  avatar: string
+  city: string
+  gender: number
+  register_date: Date
+  last_login_date: Date
+  register_ip: string
+  status: number
+  avatar_pendant: string
+  wx_openid: string
+  wx_unionid: string
+  qq_openid: string
+}
+
+export const Users = sequelize.define<Model<Table>>(
   'users',
   {
     id: {

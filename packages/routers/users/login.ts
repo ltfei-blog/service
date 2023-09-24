@@ -1,10 +1,13 @@
-import { LoginQueue, loginStatus, type Table } from '@ltfei-blog/service-db'
+import { LoginQueue, loginStatus, Users } from '@ltfei-blog/service-db'
 import { getConfig } from '@ltfei-blog/service-config'
 import { Router } from 'express'
-import type { RequestHandler, Request } from 'express'
 import { v4 as uuidV4 } from 'uuid'
-import axios from 'axios'
-import type { QqConnectUserInfo } from '@ltfei-blog/service-router/types'
+import {
+  getAccessToken,
+  getUserInfo,
+  checkUuid
+} from '@ltfei-blog/service-utils/qqConnectLoginApi'
+import type { LoginRequest } from '@ltfei-blog/service-router/types'
 
 const router = Router()
 
@@ -43,35 +46,6 @@ router.get('/init', async (req, res) => {
   })
 })
 
-interface LoginRequest extends Request {
-  LoginQueue: Table
-}
-
-const checkUuid = (status: number): RequestHandler => {
-  return async (req: LoginRequest, res, next) => {
-    const { uuid } = req.body
-    const data = await LoginQueue.findOne({
-      where: {
-        uuid
-      }
-    })
-    if (!data) {
-      return res.send({
-        status: 403
-      })
-    }
-    const { status, date, id } = data.toJSON()
-    // todo: 过期时间配置项
-    if (status != loginStatus.notLogin || Date.now() > date.valueOf() + 1000 * 60) {
-      return res.send({
-        status: 403
-      })
-    }
-    req.LoginQueue = data.toJSON()
-    next()
-  }
-}
-
 /**
  * 获取 qq 互联登录地址
  * 请求时需要携带上一步获取的uuid
@@ -82,6 +56,7 @@ router.post(
   async (req: LoginRequest, res) => {
     const { uuid } = req.body
     const { status, date, id } = req.LoginQueue
+    console.log('getQqConnectUrl')
 
     // 修改状态值
     await LoginQueue.update(
@@ -111,6 +86,17 @@ router.post(
       '&state=',
       uuid
     ]
+    // 可以返回后再异步处理
+    LoginQueue.update(
+      {
+        status: loginStatus.getQqConnectUrl
+      },
+      {
+        where: {
+          id: req.LoginQueue.id
+        }
+      }
+    )
 
     res.send({
       status: 200,
@@ -133,43 +119,57 @@ router.post(
 
     /**
      * 使用Authorization_Code获取Access_Token
-     * https://wiki.connect.qq.com/%e4%bd%bf%e7%94%a8authorization_code%e8%8e%b7%e5%8f%96access_token
      */
     const {
-      data: { access_token: accessToken, openid }
-    } = await axios<{
-      access_token: string
-      openid: string
-    }>({
-      url: 'https://graph.qq.com/oauth2.0/token',
-      method: 'GET',
-      params: {
-        grant_type: 'authorization_code',
-        client_id: appid,
-        client_secret: appkey,
-        code: authorizationCode,
-        redirect_uri,
-        fmt: 'json',
-        need_openid: 1
-      }
-    })
+      access_token: accessToken,
+      openid,
+      error
+    } = await getAccessToken(appid, appkey, authorizationCode, redirect_uri)
+
+    if (error) {
+      return res.send({
+        status: 403,
+        msg: error
+      })
+    }
 
     /**
      * get_user_info 获取用户信息
-     * https://wiki.connect.qq.com/get_user_info
      */
-    const { data } = await axios<QqConnectUserInfo>({
-      url: 'https://graph.qq.com/user/get_user_info',
-      method: 'GET',
-      params: {
-        access_token: accessToken,
-        oauth_consumer_key: appid,
-        openid
+    const data = await getUserInfo(accessToken, appid, openid)
+    if (data.ret < 0) {
+      return res.send({
+        status: 403,
+        msg: `${data.ret} ${data.msg}`
+      })
+    }
+
+    // todo: 增/查数据库
+    const [user, created] = await Users.findOrCreate({
+      where: {
+        qq_openid: openid
+      },
+      defaults: {
+        username: data.nickname,
+        // password
+        avatar: data.figureurl_qq_2 || data.figureurl_qq_1,
+        // city:
+        // gender
+        register_date: new Date(),
+        // last_login_date
+        register_ip: req.ip,
+        // status:
+        // avatar_pendant
+        // wx_openid
+        // wx_unionid
+        qq_openid: openid
       }
     })
 
-    // todo: 增/查数据库
     // todo: 生成token
+    res.send({
+      status: 200
+    })
   }
 )
 
