@@ -13,7 +13,7 @@
   },
   "keywords": [],
   "author": "ltfei<ltfei@ltfei.cn>",
-  "license": "MIT",
+  "license": "GPL",
   "repository": "https://github.com/ltfei-blog/service",
   "workspaces": [
     "packages/*",
