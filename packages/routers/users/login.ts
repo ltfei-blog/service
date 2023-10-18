@@ -8,6 +8,7 @@ import {
   checkUuid
 } from '@ltfei-blog/service-utils/qqConnectLoginApi'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
+import { createUserToken } from '@ltfei-blog/service-utils/token'
 
 const router = Router()
 
@@ -166,9 +167,17 @@ router.post(
       }
     })
 
+    const token = createUserToken({
+      id: user.toJSON().id
+    })
+
     // todo: 生成token
     res.send({
-      status: 200
+      status: 200,
+      data: {
+        token,
+        type: created ? 'register' : 'login'
+      }
     })
   }
 )
