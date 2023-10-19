@@ -167,7 +167,7 @@ router.post(
       }
     })
 
-    const token = createUserToken({
+    const token = await createUserToken({
       id: user.toJSON().id
     })
 
