@@ -18,8 +18,34 @@ router.post('/', async (req: Request, res) => {
     }
   })
   if (editing) {
+    const {
+      articles_id,
+      author,
+      content,
+      cover,
+      create_time,
+      desc,
+      last_edit_time,
+      title,
+      type
+    } = editing.toJSON()
     // 有草稿的情形
-    return
+    return res.send({
+      status: 200,
+      data: {
+        edit: {
+          articles_id,
+          author,
+          content,
+          cover,
+          create_time,
+          desc,
+          last_edit_time,
+          title,
+          type
+        }
+      }
+    })
   }
 
   res.send({
