@@ -53,8 +53,11 @@ export const Articles = sequelize.define<Model<Table>>(
     timestamps: false,
     indexes: [
       {
-        fields: ['id', 'author', 'create_time', 'last_edit_time'],
+        fields: ['id'],
         unique: true
+      },
+      {
+        fields: ['author', 'create_time', 'last_edit_time']
       }
     ]
   }

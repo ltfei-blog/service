@@ -72,8 +72,7 @@ export const ArticlesSave = sequelize.define<Model<Table, Table>>(
         unique: true
       },
       {
-        fields: ['author', 'create_time', 'last_edit_time', 'articles_id'],
-        unique: false
+        fields: ['author', 'create_time', 'last_edit_time', 'articles_id']
       }
     ]
   }
