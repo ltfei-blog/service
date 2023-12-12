@@ -7,6 +7,9 @@ type Table = {
   content: string
   cover: string
   desc: string
+  /**
+   * - 1 正常
+   */
   status: number
   author: number
   create_time: number

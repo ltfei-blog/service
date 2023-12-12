@@ -84,12 +84,74 @@ router.post('/', async (req: Request, res) => {
     content,
     type,
     articles_id: articlesId,
-    status: 0
+    status: 0,
+    author: auth.id
   })
+
+  const auditId = result.toJSON().id
+
+  /**
+   * 如果设置无需审核，或用户有 无需审核 权限，则自动通过审核
+   */
+  // todo: dev环境暂时全部直接通过
+  if (true) {
+    let id = articlesId
+    if (type == 'add') {
+      const result = await Articles.create({
+        title,
+        desc,
+        cover,
+        content,
+        author: auth.id,
+        create_time: Date.now(),
+        status: 1
+      })
+
+      id = result.toJSON().id
+    } else if (type == 'edit') {
+      await Articles.update(
+        {
+          title,
+          desc,
+          cover,
+          content,
+          last_edit_time: Date.now()
+        },
+        {
+          where: {
+            id: articlesId
+          }
+        }
+      )
+    }
+    // 修改审核表的审核状态和审核人id
+    // todo: 审核人id和审核理由
+    ArticlesAudit.update(
+      {
+        status: 1,
+        articles_id: id
+      },
+      {
+        where: {
+          id: auditId
+        }
+      }
+    )
+    // 直接返回文章id
+    return res.send({
+      status: 200,
+      data: {
+        audit: false,
+        id
+      }
+    })
+  }
 
   res.send({
     status: 200,
-    data: result.toJSON().id
+    data: {
+      auditId: auditId
+    }
   })
 })
 

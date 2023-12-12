@@ -23,6 +23,7 @@ type Table = {
    * 修改文章时为文章id，发布文章时在审核通过后设置为文章id
    */
   articles_id: number
+  // todo: 审核人 审核理由
 }
 
 export const ArticlesAudit = sequelize.define<Model<Table, Table>>(
