@@ -4,29 +4,16 @@ import type { Request } from '@ltfei-blog/service-app/types'
 
 const router = Router()
 
-/**
- *  id: number
+interface Body {
   title: string
-  content: string
-  cover: string
   desc: string
-  /**
-   * 1 普通草稿
-   * 2 提交审核
-   * 3 审核通过
-   * 4 审核不通过
-   *
-   *
-  status: number
-  author: number
-  create_time: number
-  last_edit_time: number
-  type: 'edit' | 'add'
-  articles_id: number
- */
+  cover: string
+  content: string
+  type: 'add' | 'edit'
+}
 
 router.post('/', async (req: Request, res) => {
-  const { title, desc, cover, content, type } = req.body
+  const { title, desc, cover, content, type }: Body = req.body
 
   if (!title || !content) {
     return res.send({

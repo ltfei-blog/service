@@ -8,19 +8,25 @@ type Table = {
   cover: string
   desc: string
   /**
-   * - 1 普通草稿
-   * - 2 已提交审核
+   * - 0 待审核
+   * - 1 审核通过
+   * - 2 审核不通过
+   * - 3 撤回审核
+   * - 4
    */
   status: number
   author: number
   create_time: number
   last_edit_time: number
   type: 'edit' | 'add'
+  /**
+   * 修改文章时为文章id，发布文章时在审核通过后设置为文章id
+   */
   articles_id: number
 }
 
-export const ArticlesSave = sequelize.define<Model<Table, Table>>(
-  'articles_save',
+export const ArticlesAudit = sequelize.define<Model<Table, Table>>(
+  'articles_audit',
   {
     id: {
       type: DataTypes.INTEGER,
