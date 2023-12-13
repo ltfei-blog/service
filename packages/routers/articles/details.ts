@@ -4,12 +4,18 @@ import { Articles, Users } from '@ltfei-blog/service-db'
 
 const router = Router()
 
-router.post('/', async (req: Request, res) => {
-  // todo: 分页查询
-  const results = await Articles.findAll({
+router.post('/:id', async (req: Request, res) => {
+  const { id } = req.params
+  if (!id) {
+    return res.send({
+      status: 403
+    })
+  }
+  const results = await Articles.findOne({
     attributes: [
       'id',
       'title',
+      'content',
       'cover',
       'desc',
       'status',
@@ -18,7 +24,8 @@ router.post('/', async (req: Request, res) => {
       'last_edit_time'
     ],
     where: {
-      status: 1
+      status: 1,
+      id
     },
     include: [
       {
@@ -26,13 +33,17 @@ router.post('/', async (req: Request, res) => {
         as: 'author_data'
       }
     ]
-    // 禁用包装器
-    // raw: true
   })
+
+  if (!results) {
+    return res.send({
+      status: 404
+    })
+  }
 
   res.send({
     status: 200,
-    data: results.map((e) => e.toJSON())
+    data: results.toJSON()
   })
 })
 
