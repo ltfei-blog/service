@@ -5,7 +5,8 @@ const baseUrl = await getConfig('app', 'baseUrl')
 const paths: string[] = [
   '/users/login/init',
   '/users/login/getQqConnectUrl',
-  '/users/login/qqConnectLogin'
+  '/users/login/qqConnectLogin',
+  '/articles/list'
 ]
 
 export default paths.map((e) => {

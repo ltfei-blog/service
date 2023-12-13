@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import type { Request } from '@ltfei-blog/service-app/types'
-import { Articles } from '@ltfei-blog/service-db'
+import { Articles, Users } from '@ltfei-blog/service-db'
 
 const router = Router()
 
@@ -10,13 +10,19 @@ router.post('/', async (req, res) => {
     where: {
       status: 1
     },
+    include: [
+      {
+        model: Users,
+        as: 'author_data'
+      }
+    ]
     // 禁用包装器
-    raw: true
+    // raw: true
   })
 
   res.send({
     status: 200,
-    data: results
+    data: results.map((e) => e.toJSON())
   })
 })
 

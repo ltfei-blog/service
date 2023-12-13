@@ -1,5 +1,6 @@
 import { sequelize } from '../connect'
 import { DataTypes, Model } from 'sequelize'
+import { Users } from '..'
 
 type Table = {
   id: number
@@ -65,3 +66,9 @@ export const Articles = sequelize.define<Model<Table>>(
     ]
   }
 )
+
+Articles.hasOne(Users, {
+  as: 'author_data',
+  sourceKey: 'author',
+  foreignKey: 'id'
+})
