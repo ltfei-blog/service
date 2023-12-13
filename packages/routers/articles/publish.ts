@@ -125,11 +125,12 @@ router.post('/', async (req: Request, res) => {
       )
     }
     // 修改审核表的审核状态和审核人id
-    // todo: 审核人id和审核理由
     ArticlesAudit.update(
       {
         status: 1,
-        articles_id: id
+        articles_id: id,
+        audit_id: -1,
+        cause: '自动通过'
       },
       {
         where: {
