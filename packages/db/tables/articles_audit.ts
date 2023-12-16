@@ -57,10 +57,10 @@ export const ArticlesAudit = sequelize.define<Model<Table, Table>>(
       type: DataTypes.INTEGER
     },
     create_time: {
-      type: DataTypes.CHAR(16)
+      type: DataTypes.BIGINT
     },
     last_edit_time: {
-      type: DataTypes.CHAR(16)
+      type: DataTypes.BIGINT
     },
     type: {
       type: DataTypes.CHAR(50)

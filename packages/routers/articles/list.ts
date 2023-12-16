@@ -17,6 +17,7 @@ router.post('/', async (req: Request, res) => {
       'create_time',
       'last_edit_time'
     ],
+    order: [['create_time', 'DESC']],
     where: {
       status: 1
     },

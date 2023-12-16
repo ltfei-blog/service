@@ -45,7 +45,7 @@ export const LoginQueue = sequelize.define<Model<Table, Table>, Table>(
      */
     url: DataTypes.CHAR,
     status: DataTypes.INTEGER,
-    date: DataTypes.DATE
+    date: DataTypes.BIGINT
   },
   {
     timestamps: false,
