@@ -2,14 +2,28 @@ import { Router } from 'express'
 import { ArticlesSave } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
 import joi from 'joi'
+import Joi from 'joi'
 
 const router = Router()
 
 interface Body {
   type: 'edit' | 'add'
 }
+const schema = Joi.object({
+  type: Joi.string().valid('add').valid('edit').required()
+})
 router.post('/', async (req: Request, res) => {
   const { type } = req.body as Body
+  /**
+   * 验证参数
+   */
+  const validate = schema.validate(req.body)
+  if (validate.error) {
+    return res.send({
+      status: 403
+    })
+  }
+
   const auth = req.auth
   const editing = await ArticlesSave.findOne({
     where: {

@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { ArticlesAudit, Articles, ArticlesSave } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
+import Joi from 'joi'
 
 const router = Router()
 
@@ -12,6 +13,15 @@ interface Body {
   type: 'add' | 'edit'
   articlesId?: number
 }
+
+const schema = Joi.object({
+  title: Joi.string().min(2).max(40).required(),
+  desc: Joi.string().min(10).max(100).required(),
+  cover: Joi.string(),
+  content: Joi.string().min(100).max(40000).required(),
+  type: Joi.string().valid('add').valid('edit').required(),
+  articlesId: Joi.number().optional().allow(null)
+})
 /**
  * 将文章插入到审核表，并将当前草稿作废
  */
@@ -21,15 +31,9 @@ router.post('/', async (req: Request, res) => {
 
   /**
    * 验证参数
-   * todo: 使用joi验证参数
    */
-  if (!title || !content || !desc) {
-    return res.send({
-      status: 403
-    })
-  }
-
-  if (type != 'edit' && type != 'add') {
+  const validate = schema.validate(req.body)
+  if (validate.error) {
     return res.send({
       status: 403
     })
