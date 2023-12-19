@@ -17,7 +17,7 @@ type Table = {
   last_edit_time: number
 }
 
-export const Articles = sequelize.define<Model<Table>>(
+export const Articles = sequelize.define<Model<Table, Table>>(
   'articles',
   {
     id: {

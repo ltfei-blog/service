@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { ArticlesSave } from '@ltfei-blog/service-db'
+import { ArticlesSave, Articles } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
 
@@ -11,17 +11,19 @@ interface Body {
   cover: string
   content: string
   type: 'add' | 'edit'
+  editId?: number
 }
 const schema = Joi.object({
   title: Joi.string().min(2).max(40).required(),
-  desc: Joi.string().min(10).max(100),
-  cover: Joi.string(),
+  desc: Joi.string().allow('').min(10).max(100),
+  cover: Joi.string().optional().allow(''),
   content: Joi.string().min(5).max(40000).required(),
-  type: Joi.string().valid('add').valid('edit').required()
+  type: Joi.string().valid('add').valid('edit').required(),
+  editId: Joi.number().optional().allow(null)
 })
 
 router.post('/', async (req: Request, res) => {
-  const { title, desc, cover, content, type }: Body = req.body
+  const { title, desc, cover, content, type, editId }: Body = req.body
 
   const validate = schema.validate(req.body)
   if (validate.error) {
@@ -30,11 +32,35 @@ router.post('/', async (req: Request, res) => {
     })
   }
 
-  // todo: 找正在编辑的草稿直接覆盖
+  if (type == 'edit' && !editId) {
+    return res.send({
+      status: 403
+    })
+  }
 
   const auth = req.auth
 
-  // 未提交的草稿
+  /**
+   * 编辑文章 验证作者
+   */
+  if (type == 'edit') {
+    const article = Articles.findOne({
+      where: {
+        author: auth.id,
+        id: editId,
+        status: 1
+      }
+    })
+    if (!article) {
+      res.send({
+        status: 404
+      })
+    }
+  }
+
+  /**
+   * 查找草稿
+   */
   const editing = await ArticlesSave.findOne({
     where: {
       author: auth.id,
@@ -51,23 +77,21 @@ router.post('/', async (req: Request, res) => {
     status: 1
   }
   if (editing) {
-    const result = await ArticlesSave.update(data, {
+    // 有正在编辑的草稿直接覆盖
+    await ArticlesSave.update(data, {
       where: {
         id: editing.toJSON().id
       }
     })
     res.send({
-      status: 200,
-      data: {}
+      status: 200
     })
   } else {
-    const result = await ArticlesSave.create(data)
+    // 插入新的草稿
+    await ArticlesSave.create(data)
 
     res.send({
-      status: 200,
-      data: {
-        id: result.toJSON().id
-      }
+      status: 200
     })
   }
 })

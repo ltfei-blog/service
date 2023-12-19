@@ -55,6 +55,12 @@ router.post('/', async (req: Request, res) => {
       }
     })
 
+    if (!article) {
+      return res.send({
+        status: 404
+      })
+    }
+
     if (article.toJSON().author != auth.id) {
       return res.send({
         status: 403

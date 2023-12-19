@@ -1,19 +1,20 @@
 import { Router } from 'express'
-import { ArticlesSave } from '@ltfei-blog/service-db'
+import { ArticlesSave, Articles } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
-import joi from 'joi'
 import Joi from 'joi'
 
 const router = Router()
 
 interface Body {
   type: 'edit' | 'add'
+  editId?: number
 }
 const schema = Joi.object({
-  type: Joi.string().valid('add').valid('edit').required()
+  type: Joi.string().valid('add').valid('edit').required(),
+  editId: Joi.number().optional().allow(null)
 })
 router.post('/', async (req: Request, res) => {
-  const { type } = req.body as Body
+  const { type, editId } = req.body as Body
   /**
    * 验证参数
    */
@@ -28,9 +29,15 @@ router.post('/', async (req: Request, res) => {
   const editing = await ArticlesSave.findOne({
     where: {
       status: 1,
-      author: auth.id
+      author: auth.id,
+      type,
+      articles_id: editId
     }
   })
+  /**
+   * 有草稿
+   * 存草稿时会判断作者，因此能查到草稿就是有权限编辑
+   */
   if (editing) {
     const {
       articles_id,
@@ -60,6 +67,31 @@ router.post('/', async (req: Request, res) => {
         }
       }
     })
+  }
+  /**
+   * 修改文章，但没有草稿
+   * 加载文章内容
+   * 加载文章内容时会约束作者
+   */
+  if (type == 'edit') {
+    const article = await Articles.findOne({
+      where: {
+        author: auth.id,
+        id: editId,
+        status: 1
+      }
+    })
+    if (!article) {
+      return res.send({ status: 404 })
+    }
+    if (article) {
+      return res.send({
+        status: 200,
+        data: {
+          article: article.toJSON()
+        }
+      })
+    }
   }
 
   res.send({
