@@ -72,11 +72,16 @@ router.post(
       if (data.statusCode != 200) {
         return res.send({ status: 500 })
       }
+      /**
+       * todo: 动态baseUrl
+       */
+      const baseUrl = 'https://dev-1259453062.cos.ap-beijing.myqcloud.com/'
       res.send({
         status: 200,
         data: {
           filename,
-          path
+          path,
+          url: `${baseUrl}${path}`
         }
       })
     })
