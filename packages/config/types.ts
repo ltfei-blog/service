@@ -38,5 +38,11 @@ export interface Config {
     baseUrl: string
   }
   ali_oss: {}
-  tencent_cos: {}
+  tencent_cos?: {
+    SecretId: string
+    SecretKey: string
+    Bucket: string
+    Region: string
+    host: string
+  }
 }
