@@ -66,9 +66,3 @@ export const Articles = sequelize.define<Model<Table, Table>>(
     ]
   }
 )
-
-Articles.hasOne(Users, {
-  as: 'author_data',
-  sourceKey: 'author',
-  foreignKey: 'id'
-})

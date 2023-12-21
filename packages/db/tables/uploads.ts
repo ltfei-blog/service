@@ -63,9 +63,3 @@ export const Uploads = sequelize.define<Model<Table, Table>>(
     ]
   }
 )
-
-Uploads.hasOne(Users, {
-  as: 'user_data',
-  sourceKey: 'user',
-  foreignKey: 'id'
-})
