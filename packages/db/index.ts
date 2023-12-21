@@ -9,3 +9,6 @@ export * from './tables/articles'
 export * from './tables/articles_save'
 export * from './tables/articles_audit'
 export * from './tables/uploads'
+export * from './tables/likes'
+
+import('./assocs')
