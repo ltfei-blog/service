@@ -32,6 +32,7 @@ app.use(
       }
       return null
     }
+    // credentialsRequired: false
   }).unless({
     path: jwtUnless
   })

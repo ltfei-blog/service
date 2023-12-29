@@ -6,6 +6,7 @@ const router = Router()
 
 router.post('/:id', async (req: Request, res) => {
   const { id } = req.params
+  const auth = req.auth
   if (!id) {
     return res.send({
       status: 403
@@ -22,7 +23,8 @@ router.post('/:id', async (req: Request, res) => {
       'author',
       'create_time',
       'last_edit_time',
-      [sequelize.fn('sum', sequelize.col('like.liked')), 'likes_count']
+      [sequelize.fn('sum', sequelize.col('likes_data.liked')), 'likes_count'],
+      [sequelize.col('liked_data.liked'), 'liked']
     ],
     where: {
       status: 1,
@@ -35,10 +37,20 @@ router.post('/:id', async (req: Request, res) => {
       },
       {
         model: Likes,
+        as: 'likes_data',
         attributes: [],
         required: false,
         where: {
           liked: 1
+        }
+      },
+      {
+        model: Likes,
+        as: 'liked_data',
+        attributes: [],
+        required: false,
+        where: {
+          user: auth?.id || 0
         }
       }
     ],

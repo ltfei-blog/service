@@ -7,11 +7,18 @@ import { Likes, Articles, Users, Uploads } from './'
  * 点赞
  */
 Likes.hasMany(Articles, {
-  as: 'likes_data',
+  as: 'like_data',
   foreignKey: 'articles'
 })
 Articles.belongsTo(Likes, {
-  foreignKey: 'id'
+  as: 'likes_data',
+  foreignKey: 'id',
+  targetKey: 'articles'
+})
+Articles.belongsTo(Likes, {
+  as: 'liked_data',
+  foreignKey: 'id',
+  targetKey: 'articles'
 })
 
 Articles.hasOne(Users, {
