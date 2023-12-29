@@ -16,7 +16,7 @@ router.post('/', async (req: Request, res) => {
       'author',
       'create_time',
       'last_edit_time',
-      [sequelize.fn('count', sequelize.col('like.liked')), 'likes_count']
+      [sequelize.fn('count', sequelize.col('likes_data.liked')), 'likes_count']
     ],
 
     order: [['create_time', 'DESC']],
@@ -30,6 +30,7 @@ router.post('/', async (req: Request, res) => {
       },
       {
         model: Likes,
+        as: 'likes_data',
         attributes: [],
         where: {
           liked: 1

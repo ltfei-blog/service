@@ -6,6 +6,7 @@ import { expressjwt as jwt } from 'express-jwt'
 import jwtUnless from './jwtUnless'
 import { app as logger } from '@ltfei-blog/service-utils/log'
 import cors from 'cors'
+import { Request } from './types'
 
 const { port, baseUrl, jwtSecret, cors: corsOrigin } = await getConfig('app')
 const app = express()
@@ -31,10 +32,8 @@ app.use(
         return req.headers.authorization.split(' ')[1]
       }
       return null
-    }
-    // credentialsRequired: false
-  }).unless({
-    path: jwtUnless
+    },
+    credentialsRequired: false
   })
 )
 
@@ -47,14 +46,30 @@ app.use(
     next: express.NextFunction
   ) => {
     if (err.name === 'UnauthorizedError') {
-      res.send({
-        status: 401
-      })
+      // token验证失败，放在下个身份验证路由处理
+      next()
     } else {
       next(err)
     }
   }
 )
+
+// 身份验证
+app.use(baseUrl, (req: Request, res, next) => {
+  const auth = req.auth
+
+  const unlessIndex = jwtUnless.findIndex((e) => {
+    return e.test(req.path)
+  })
+  const isUnless = unlessIndex != -1
+
+  if (!auth && !isUnless) {
+    return res.send({
+      status: 4001
+    })
+  }
+  next()
+})
 
 // req.body
 app.use(bodyParser.json())
