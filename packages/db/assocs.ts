@@ -1,7 +1,7 @@
 /**
  * 定义表之间的关联
  */
-import { Likes, Articles, Users, Uploads } from './'
+import { Likes, Articles, Users, Uploads, Comments } from './'
 
 /**
  * 点赞
@@ -30,5 +30,16 @@ Articles.hasOne(Users, {
 Uploads.hasOne(Users, {
   as: 'user_data',
   sourceKey: 'user',
+  foreignKey: 'id'
+})
+
+Comments.hasOne(Articles, {
+  as: 'comment_data',
+  sourceKey: 'article_id',
+  foreignKey: 'id'
+})
+Comments.hasOne(Users, {
+  as: 'comment_user_data',
+  sourceKey: 'user_id',
   foreignKey: 'id'
 })

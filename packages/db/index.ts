@@ -10,5 +10,6 @@ export * from './tables/articles_save'
 export * from './tables/articles_audit'
 export * from './tables/uploads'
 export * from './tables/likes'
+export * from './tables/comments'
 
 import('./assocs')
