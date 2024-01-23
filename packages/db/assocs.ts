@@ -39,7 +39,15 @@ Comments.hasOne(Articles, {
   foreignKey: 'id'
 })
 Comments.hasOne(Users, {
-  as: 'comment_user_data',
+  as: 'sender',
   sourceKey: 'user_id',
   foreignKey: 'id'
+})
+Comments.hasMany(Comments, {
+  foreignKey: 'comment_id'
+})
+Comments.belongsTo(Comments, {
+  as: 'reply_data',
+  foreignKey: 'id',
+  targetKey: 'comment_id'
 })

@@ -1,14 +1,72 @@
 import { Router } from 'express'
 import Joi from 'joi'
 import type { Request } from '@ltfei-blog/service-app/types'
-import { Comments } from '@ltfei-blog/service-db'
+import { Comments, Users, sequelize } from '@ltfei-blog/service-db'
 
 const router = Router()
+
+interface Body {
+  articleId: number
+}
 
 const schema = Joi.object({
   articleId: Joi.number().required()
 })
 
-router.post('/list', (req, res) => {})
+router.post('/list', async (req: Request, res) => {
+  const validate = schema.validate(req.body)
+  console.log(req.body, validate)
+
+  if (validate.error) {
+    return res.send({
+      status: 403
+    })
+  }
+  const auth = req.auth
+  const { articleId } = req.body as Body
+  // todo: 统计被点赞数量
+  // todo: 是否点赞
+  // todo: 统计回复数量(仅主评论)
+  // todo: 是否作者（前端判断
+
+  const comments = await Comments.findAll({
+    attributes: [
+      'id',
+      'content',
+      'user_id',
+      'article_id',
+      'reply_id',
+      'comment_id',
+      'status',
+      'create_time',
+      'last_edit_time',
+      [sequelize.fn('count', sequelize.col('reply_data.id')), 'reply_count']
+    ],
+    where: {
+      article_id: articleId
+    },
+    include: [
+      {
+        model: Users,
+        as: 'sender',
+        attributes: ['id', 'username', 'avatar', 'avatar_pendant']
+      },
+      {
+        model: Comments,
+        as: 'reply_data',
+        attributes: [],
+        required: false
+      }
+    ],
+    group: ['comments.id']
+    // todo: 先获取全部评论
+    // limit: 20
+  })
+
+  res.send({
+    status: 200,
+    data: comments
+  })
+})
 
 export default router
