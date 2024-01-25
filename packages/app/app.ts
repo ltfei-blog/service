@@ -7,6 +7,7 @@ import jwtUnless from './jwtUnless'
 import { app as logger } from '@ltfei-blog/service-utils/log'
 import cors from 'cors'
 import { Request } from './types'
+import './procexit'
 
 const { port, baseUrl, jwtSecret, cors: corsOrigin } = await getConfig('app')
 const app = express()
