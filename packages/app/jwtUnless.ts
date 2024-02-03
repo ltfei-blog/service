@@ -3,7 +3,8 @@ const paths: string[] = [
   '/users/login/getQqConnectUrl',
   '/users/login/qqConnectLogin',
   '/articles/list',
-  '/articles/details'
+  '/articles/details',
+  '/comment/list'
 ]
 
 export default paths.map((e) => {

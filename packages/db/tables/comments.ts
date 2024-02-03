@@ -16,7 +16,29 @@ type Table = {
   last_edit_time: number
 }
 
-export const Comments = sequelize.define<Model<Table, Table>>(
+export const Comments = sequelize.define<
+  Model<
+    {
+      id: number
+      content: string
+      user_id: number
+      article_id: number
+      reply_id: number
+      comment_id: number
+      status: number
+      create_time: number
+      last_edit_time?: number
+      reply_count?: number
+      sender?: {
+        id: number
+        username: string
+        avatar: string
+        avatar_pendant?: any
+      }
+    },
+    Table
+  >
+>(
   'comments',
   {
     id: {
