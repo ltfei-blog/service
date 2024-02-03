@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import Joi from 'joi'
 import type { Request } from '@ltfei-blog/service-app/types'
-import { Comments, Users, sequelize } from '@ltfei-blog/service-db'
+import { Comments, CommentLikes, Users, sequelize } from '@ltfei-blog/service-db'
 import type { Comment } from '../types'
 
 const router = Router()
@@ -18,6 +18,7 @@ const mapComments = (
     create_time: number
     last_edit_time?: any
     reply_count?: number
+    likes_count?: number
     sender?: {
       id: number
       username: string
@@ -30,8 +31,6 @@ const mapComments = (
 
   comments.forEach((e) => {
     // 回复id为0的是主评论
-    console.log(e.reply_id)
-
     if (e.reply_id) {
       const result = results.find((result) => {
         return result.id == e.comment_id
@@ -46,7 +45,7 @@ const mapComments = (
         userId: e.sender.id,
         avatar: e.sender.avatar,
         username: e.sender.username,
-        likeCount: 0,
+        likeCount: e.likes_count,
         liked: false,
         isAuthor: false,
         replyCommentId: e.comment_id,
@@ -55,7 +54,6 @@ const mapComments = (
       })
       return
     }
-    console.log(results)
 
     results.push({
       id: e.id,
@@ -64,7 +62,7 @@ const mapComments = (
       userId: e.sender.id,
       avatar: e.sender.avatar,
       username: e.sender.username,
-      likeCount: 0,
+      likeCount: e.likes_count,
       liked: false,
       isAuthor: false,
       reply: []
@@ -110,7 +108,8 @@ router.post('/list', async (req: Request, res) => {
       'status',
       'create_time',
       'last_edit_time',
-      [sequelize.fn('count', sequelize.col('reply_data.id')), 'reply_count']
+      [sequelize.fn('count', sequelize.col('reply_data.id')), 'reply_count'],
+      [sequelize.fn('count', sequelize.col('likes_data.liked')), 'likes_count']
     ],
     where: {
       article_id: articleId
@@ -125,6 +124,15 @@ router.post('/list', async (req: Request, res) => {
         model: Comments,
         as: 'reply_data',
         attributes: [],
+        required: false
+      },
+      {
+        model: CommentLikes,
+        as: 'likes_data',
+        attributes: [],
+        where: {
+          liked: 1
+        },
         required: false
       }
     ],

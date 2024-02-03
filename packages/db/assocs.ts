@@ -1,7 +1,7 @@
 /**
  * 定义表之间的关联
  */
-import { Likes, Articles, Users, Uploads, Comments } from './'
+import { Likes, Articles, Users, Uploads, Comments, CommentLikes } from './'
 
 /**
  * 点赞
@@ -50,4 +50,17 @@ Comments.belongsTo(Comments, {
   as: 'reply_data',
   foreignKey: 'id',
   targetKey: 'comment_id'
+})
+
+/**
+ * 评论点赞
+ */
+CommentLikes.hasMany(Comments, {
+  as: 'like_data',
+  foreignKey: 'comment'
+})
+Comments.belongsTo(CommentLikes, {
+  as: 'likes_data',
+  foreignKey: 'id',
+  targetKey: 'comment'
 })
