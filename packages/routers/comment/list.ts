@@ -19,6 +19,7 @@ const mapComments = (
     last_edit_time?: any
     reply_count?: number
     likes_count?: number
+    liked?: number
     sender?: {
       id: number
       username: string
@@ -41,12 +42,12 @@ const mapComments = (
       result.reply?.push({
         id: e.id,
         content: e.content,
-        date: e.create_time.toString(),
+        date: e.create_time,
         userId: e.sender.id,
         avatar: e.sender.avatar,
         username: e.sender.username,
         likeCount: e.likes_count,
-        liked: false,
+        liked: Boolean(e.liked),
         isAuthor: false,
         replyCommentId: e.comment_id,
         replyToReplyId: e.reply_count,
@@ -58,12 +59,12 @@ const mapComments = (
     results.push({
       id: e.id,
       content: e.content,
-      date: e.create_time.toString(),
+      date: e.create_time,
       userId: e.sender.id,
       avatar: e.sender.avatar,
       username: e.sender.username,
       likeCount: e.likes_count,
-      liked: false,
+      liked: Boolean(e.liked),
       isAuthor: false,
       reply: []
     })
@@ -82,7 +83,6 @@ const schema = Joi.object({
 
 router.post('/list', async (req: Request, res) => {
   const validate = schema.validate(req.body)
-  console.log(req.body, validate)
 
   if (validate.error) {
     return res.send({
@@ -90,6 +90,9 @@ router.post('/list', async (req: Request, res) => {
     })
   }
   const auth = req.auth
+
+  console.log(auth)
+
   const { articleId } = req.body as Body
   // todo: 统计被点赞数量
   // todo: 是否点赞
@@ -109,7 +112,8 @@ router.post('/list', async (req: Request, res) => {
       'create_time',
       'last_edit_time',
       [sequelize.fn('count', sequelize.col('reply_data.id')), 'reply_count'],
-      [sequelize.fn('count', sequelize.col('likes_data.liked')), 'likes_count']
+      [sequelize.fn('count', sequelize.col('likes_data.liked')), 'likes_count'],
+      [sequelize.col('liked_data.liked'), 'liked']
     ],
     where: {
       article_id: articleId
@@ -134,6 +138,15 @@ router.post('/list', async (req: Request, res) => {
           liked: 1
         },
         required: false
+      },
+      {
+        model: CommentLikes,
+        as: 'liked_data',
+        attributes: [],
+        required: false,
+        where: {
+          user: auth?.id || 0
+        }
       }
     ],
     group: ['comments.id']

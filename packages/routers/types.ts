@@ -51,7 +51,7 @@ type ID = number | string
 export interface CommentContent {
   id: ID
   content: string
-  date: Date | string
+  date: Date | string | number
   userId: ID
   avatar: string
   username: string
