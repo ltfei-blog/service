@@ -64,3 +64,8 @@ Comments.belongsTo(CommentLikes, {
   foreignKey: 'id',
   targetKey: 'comment'
 })
+Comments.belongsTo(CommentLikes, {
+  as: 'liked_data',
+  foreignKey: 'id',
+  targetKey: 'comment'
+})
