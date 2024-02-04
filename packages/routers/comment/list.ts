@@ -2,76 +2,9 @@ import { Router } from 'express'
 import Joi from 'joi'
 import type { Request } from '@ltfei-blog/service-app/types'
 import { Comments, CommentLikes, Users, sequelize } from '@ltfei-blog/service-db'
-import type { Comment } from '../types'
+import { mapComments } from '@ltfei-blog/service-utils/mapComments'
 
 const router = Router()
-
-const mapComments = (
-  comments: {
-    id: number
-    content: string
-    user_id: number
-    article_id: number
-    reply_id?: number
-    comment_id: number
-    status?: any
-    create_time: number
-    last_edit_time?: any
-    reply_count?: number
-    likes_count?: number
-    liked?: number
-    sender?: {
-      id: number
-      username: string
-      avatar: string
-      avatar_pendant?: any
-    }
-  }[]
-): Comment[] => {
-  const results: Comment[] = []
-
-  comments.forEach((e) => {
-    // 回复id为0的是主评论
-    if (e.reply_id) {
-      const result = results.find((result) => {
-        return result.id == e.comment_id
-      })
-      if (!result) {
-        return
-      }
-      result.reply?.push({
-        id: e.id,
-        content: e.content,
-        date: e.create_time,
-        userId: e.sender.id,
-        avatar: e.sender.avatar,
-        username: e.sender.username,
-        likeCount: e.likes_count,
-        liked: Boolean(e.liked),
-        isAuthor: false,
-        replyCommentId: e.comment_id,
-        replyToReplyId: e.reply_count,
-        replyCount: e.reply_count
-      })
-      return
-    }
-
-    results.push({
-      id: e.id,
-      content: e.content,
-      date: e.create_time,
-      userId: e.sender.id,
-      avatar: e.sender.avatar,
-      username: e.sender.username,
-      likeCount: e.likes_count,
-      liked: Boolean(e.liked),
-      isAuthor: false,
-      reply: []
-    })
-  })
-
-  return results
-}
 
 interface Body {
   articleId: number
@@ -149,7 +82,8 @@ router.post('/list', async (req: Request, res) => {
         }
       }
     ],
-    group: ['comments.id']
+    group: ['comments.id'],
+    order: [['create_time', 'DESC']]
     // todo: 先获取全部评论
     // limit: 20
   })
