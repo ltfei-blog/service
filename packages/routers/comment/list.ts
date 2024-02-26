@@ -27,11 +27,6 @@ router.post('/list', async (req: Request, res) => {
   console.log(auth)
 
   const { articleId } = req.body as Body
-  // todo: 统计被点赞数量
-  // todo: 是否点赞
-  // todo: 统计回复数量(仅主评论)
-  // todo: 是否作者（前端判断
-  // todo: 子评论不用统计回复数量
 
   const comments = await Comments.findAll({
     attributes: [

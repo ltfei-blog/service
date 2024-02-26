@@ -1,0 +1,20 @@
+import { Permission } from './permissionsList'
+import { defaultPermission } from './defaultPermissionGroup'
+import { checkPermission } from './checkPermission'
+import { getUserPermissionGroup } from './getUserPermissionGroup'
+
+/**
+ * 匹配用户的某个权限
+ */
+
+export const getUserPermission = async (user: number, permissionKey: Permission) => {
+  const permissionGroups = await getUserPermissionGroup(user)
+  for (const group of permissionGroups) {
+    const permission = await checkPermission(group, permissionKey)
+    if (permission != null) {
+      return permission
+    }
+  }
+  // 所有权限组均没有找到，使用默认权限组
+  return defaultPermission[permissionKey.key]
+}
