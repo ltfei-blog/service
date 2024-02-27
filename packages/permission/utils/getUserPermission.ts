@@ -1,5 +1,4 @@
 import { Permission } from './permissionsList'
-import { defaultPermission } from './defaultPermissionGroup'
 import { checkPermission } from './checkPermission'
 import { getUserPermissionGroup } from '../sql/getUserPermissionGroup'
 
@@ -16,6 +15,6 @@ export const getUserPermission = async (user: number, permissionKey: Permission)
       return permission
     }
   }
-  // 所有权限组均没有找到，使用默认权限组
-  return defaultPermission[permissionKey.key]
+  // 所有权限组均没有找到，使用默认权限
+  return permissionKey.defaultValue
 }

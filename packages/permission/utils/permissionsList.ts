@@ -2,61 +2,37 @@
  * 权限列表
  */
 
-export type PermissioKey =
-  /**
-   * 发布文章
-   */
-  | 'creator.publish_article'
-  /**
-   * 发布文章允许跳过审核
-   */
-  | 'creator.publish_article_skip_audit'
-  /**
-   * 上传图片
-   */
-  | 'creator.upload_image'
-  /**
-   * 保存草稿
-   */
-  | 'creator.save_draft'
-  /**
-   * 删除自己作品下用户的评论
-   */
-  | 'creator.delete_user_comment'
-
-export interface Permission<T = PermissioKey> {
-  key: T
+export type Permission = {
+  key: string
+  defaultValue: 1 | 2
 }
 
-export const PERMISSIONS: { [key in PermissioKey]: Permission<key> } = {
+const permission = (key: string, defaultValue: 1 | 2): Permission => {
+  return {
+    key,
+    defaultValue
+  }
+}
+
+export const PERMISSIONS = {
   /**
    * 发布文章
    */
-  'creator.publish_article': {
-    key: 'creator.publish_article'
-  },
+  creator_publishArticle: permission('creator.publish_article', 1),
   /**
    * 发布文章允许跳过审核
    */
-  'creator.publish_article_skip_audit': {
-    key: 'creator.publish_article_skip_audit'
-  },
+  creator_publishArticleSkipAudit: permission('creator.publish_article_skip_audit', 2),
   /**
    * 上传图片
    */
-  'creator.upload_image': {
-    key: 'creator.upload_image'
-  },
+  creator_uploadImage: permission('creator.upload_image', 1),
   /**
    * 保存草稿
    */
-  'creator.save_draft': {
-    key: 'creator.save_draft'
-  },
+  creator_saveDraft: permission('creator.save_draft', 1),
   /**
    * 删除自己作品下用户的评论
    */
-  'creator.delete_user_comment': {
-    key: 'creator.delete_user_comment'
-  }
+  creator_deleteUserComment: permission('creator.delete_user_comment', 1)
 }
