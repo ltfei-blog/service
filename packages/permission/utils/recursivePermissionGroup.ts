@@ -1,5 +1,5 @@
 import type { PermissionGroupsTable } from '@ltfei-blog/service-db'
-import { getPermissionGroup } from './getPermissionGroup'
+import { getPermissionGroup } from '../sql/getPermissionGroup'
 
 /**
  * 递归查询权限组

@@ -1,10 +1,11 @@
 import { Permission } from './permissionsList'
 import { defaultPermission } from './defaultPermissionGroup'
 import { checkPermission } from './checkPermission'
-import { getUserPermissionGroup } from './getUserPermissionGroup'
+import { getUserPermissionGroup } from '../sql/getUserPermissionGroup'
 
 /**
  * 匹配用户的某个权限
+ * todo: 缓存
  */
 
 export const getUserPermission = async (user: number, permissionKey: Permission) => {

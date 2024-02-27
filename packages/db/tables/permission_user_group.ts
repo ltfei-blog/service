@@ -42,3 +42,5 @@ export const PermissionUserGroup = sequelize.define<Model<Table, Table>, Table>(
     ]
   }
 )
+
+export { Table as PermissionUserGroupTable }

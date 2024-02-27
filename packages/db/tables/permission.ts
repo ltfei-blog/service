@@ -51,3 +51,5 @@ export const Permissions = sequelize.define<Model<Table, Table>, Table>(
     ]
   }
 )
+
+export { Table as PermissionsTable }
