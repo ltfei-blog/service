@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import type { Request } from '@ltfei-blog/service-app/types'
-import { Articles, Users, Likes, sequelize } from '@ltfei-blog/service-db'
+import { Articles, Users, Likes, Comments, sequelize } from '@ltfei-blog/service-db'
 
 const router = Router()
 
@@ -24,7 +24,8 @@ router.post('/:id', async (req: Request, res) => {
       'create_time',
       'last_edit_time',
       [sequelize.fn('sum', sequelize.col('likes_data.liked')), 'likes_count'],
-      [sequelize.col('liked_data.liked'), 'liked']
+      [sequelize.col('liked_data.liked'), 'liked'],
+      [sequelize.fn('count', sequelize.col('comment_count.id')), 'comments_count']
     ],
     where: {
       status: 1,
@@ -52,6 +53,12 @@ router.post('/:id', async (req: Request, res) => {
         where: {
           user: auth?.id || 0
         }
+      },
+      {
+        model: Comments,
+        as: 'comment_count',
+        attributes: [],
+        required: false
       }
     ],
     group: ['articles.id']
