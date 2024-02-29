@@ -2,7 +2,7 @@ import { Router } from 'express'
 import Joi from 'joi'
 import type { Request } from '@ltfei-blog/service-app/types'
 import { Comments } from '@ltfei-blog/service-db'
-import { mapKeys } from '@ltfei-blog/service-utils/mapComments'
+import { auth, PERMISSIONS } from '@ltfei-blog/service-permission'
 
 const router = Router()
 
@@ -20,35 +20,39 @@ const schema = Joi.object({
   articleId: Joi.number().required()
 })
 
-router.post('/publish', async (req: Request, res) => {
-  const validate = schema.validate(req.body)
-  console.log(req.body, validate)
+router.post(
+  '/publish',
+  auth(PERMISSIONS.contentOperation_publishComment),
+  async (req: Request, res) => {
+    const validate = schema.validate(req.body)
+    console.log(req.body, validate)
 
-  if (validate.error) {
-    return res.send({
-      status: 403
+    if (validate.error) {
+      return res.send({
+        status: 403
+      })
+    }
+    const auth = req.auth
+    // todo: 验证文章状态以及用户访问文章的权限，验证回复的评论的状态
+
+    const { content, commentId, replyId, articleId } = req.body as Body
+
+    const comment = await Comments.create({
+      content,
+      user_id: auth.id,
+      article_id: articleId,
+      reply_id: replyId || null,
+      comment_id: commentId || null,
+      create_time: Date.now()
+    })
+
+    res.send({
+      status: 200,
+      data: {
+        id: comment.toJSON().id
+      }
     })
   }
-  const auth = req.auth
-  // todo: 验证文章状态以及用户访问文章的权限，验证回复的评论的状态
-
-  const { content, commentId, replyId, articleId } = req.body as Body
-
-  const comment = await Comments.create({
-    content,
-    user_id: auth.id,
-    article_id: articleId,
-    reply_id: replyId || null,
-    comment_id: commentId || null,
-    create_time: Date.now()
-  })
-
-  res.send({
-    status: 200,
-    data: {
-      id: comment.toJSON().id
-    }
-  })
-})
+)
 
 export default router

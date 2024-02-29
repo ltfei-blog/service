@@ -2,6 +2,7 @@ import { Router } from 'express'
 import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
 import { CommentLikes } from '@ltfei-blog/service-db'
+import { auth, PERMISSIONS } from '@ltfei-blog/service-permission'
 
 const router = Router()
 
@@ -15,38 +16,42 @@ const schema = Joi.object({
   like: Joi.boolean().required()
 })
 
-router.post('/like', async (req: Request, res) => {
-  const validate = schema.validate(req.body)
+router.post(
+  '/like',
+  auth(PERMISSIONS.contentOperation_likeComment),
+  async (req: Request, res) => {
+    const validate = schema.validate(req.body)
 
-  if (validate.error) {
-    return res.send({
-      status: 403
-    })
-  }
-  const auth = req.auth
-  const { commentId, like } = req.body as Body
-
-  const [comment, create] = await CommentLikes.findOrCreate({
-    defaults: {
-      comment: commentId,
-      user: auth.id,
-      liked: like,
-      create_time: Date.now()
-    },
-    where: {
-      user: auth.id,
-      comment: commentId
+    if (validate.error) {
+      return res.send({
+        status: 403
+      })
     }
-  })
-  // 没有点赞过，已经插入了新数据
-  if (create) {
+    const auth = req.auth
+    const { commentId, like } = req.body as Body
+
+    const [comment, create] = await CommentLikes.findOrCreate({
+      defaults: {
+        comment: commentId,
+        user: auth.id,
+        liked: like,
+        create_time: Date.now()
+      },
+      where: {
+        user: auth.id,
+        comment: commentId
+      }
+    })
+    // 没有点赞过，已经插入了新数据
+    if (create) {
+      return res.send({ status: 200 })
+    }
+    comment.set({
+      liked: like
+    })
+    comment.save()
     return res.send({ status: 200 })
   }
-  comment.set({
-    liked: like
-  })
-  comment.save()
-  return res.send({ status: 200 })
-})
+)
 
 export default router

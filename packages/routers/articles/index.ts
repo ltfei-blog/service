@@ -5,14 +5,15 @@ import publish from './publish'
 import list from './list'
 import details from './details'
 import like from './like'
+import { auth, PERMISSIONS } from '@ltfei-blog/service-permission'
 
 const router = Router()
 
 router.use('/init', init)
-router.use('/save', save)
-router.use('/publish', publish)
+router.use('/save', auth(PERMISSIONS.creator_saveDraft), save)
+router.use('/publish', auth(PERMISSIONS.creator_publishArticle), publish)
 router.use('/list', list)
 router.use('/details', details)
-router.use('/like', like)
+router.use('/like', auth(PERMISSIONS.contentOperation_like), like)
 
 export default router
