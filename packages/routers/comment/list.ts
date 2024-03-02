@@ -77,7 +77,7 @@ router.post('/list', async (req: Request, res) => {
         }
       }
     ],
-    group: ['comments.id'],
+    group: ['comments.id', 'liked_data.id'],
     order: [['create_time', 'DESC']]
     // todo: 先获取全部评论
     // limit: 20

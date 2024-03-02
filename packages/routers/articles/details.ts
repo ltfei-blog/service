@@ -12,6 +12,7 @@ router.post('/:id', async (req: Request, res) => {
       status: 403
     })
   }
+
   const results = await Articles.findOne({
     attributes: [
       'id',
@@ -24,8 +25,13 @@ router.post('/:id', async (req: Request, res) => {
       'create_time',
       'last_edit_time',
       [sequelize.fn('sum', sequelize.col('likes_data.liked')), 'likes_count'],
-      [sequelize.col('liked_data.liked'), 'liked'],
-      [sequelize.fn('count', sequelize.col('comment_count.id')), 'comments_count']
+      [sequelize.fn('max', sequelize.col('liked_data.liked')), 'liked'],
+      [
+        sequelize.literal(
+          `(select count(comments.id) from comments where comments.article_id = articles.id)`
+        ),
+        'comments_count'
+      ]
     ],
     where: {
       status: 1,
@@ -53,12 +59,6 @@ router.post('/:id', async (req: Request, res) => {
         where: {
           user: auth?.id || 0
         }
-      },
-      {
-        model: Comments,
-        as: 'comment_count',
-        attributes: [],
-        required: false
       }
     ],
     group: ['articles.id']

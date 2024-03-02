@@ -80,6 +80,7 @@ export const Comments = sequelize.define<
         unique: true
       },
       {
+        name: 'indexes',
         fields: [
           'user_id',
           'article_id',

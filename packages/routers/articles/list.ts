@@ -17,7 +17,12 @@ router.post('/', async (req: Request, res) => {
       'create_time',
       'last_edit_time',
       [sequelize.fn('count', sequelize.col('likes_data.liked')), 'likes_count'],
-      [sequelize.fn('count', sequelize.col('comment_count.id')), 'comments_count']
+      [
+        sequelize.literal(
+          `(select count(comments.id) from comments where comments.article_id = articles.id)`
+        ),
+        'comments_count'
+      ]
     ],
 
     order: [['create_time', 'DESC']],
@@ -37,17 +42,9 @@ router.post('/', async (req: Request, res) => {
           liked: 1
         },
         required: false
-      },
-      {
-        model: Comments,
-        as: 'comment_count',
-        attributes: [],
-        required: false
       }
     ],
     group: ['articles.id']
-    // 禁用包装器
-    // raw: true
   })
 
   console.log(results)
