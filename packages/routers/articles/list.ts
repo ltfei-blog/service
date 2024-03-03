@@ -47,8 +47,6 @@ router.post('/', async (req: Request, res) => {
     group: ['articles.id']
   })
 
-  console.log(results)
-
   res.send({
     status: 200,
     data: results.map((e) => e.toJSON())

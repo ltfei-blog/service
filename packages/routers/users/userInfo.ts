@@ -11,6 +11,11 @@ router.post('/', async (req: Request, res) => {
       id: auth.id
     }
   })
+  if (!result) {
+    return res.send({
+      status: 4001
+    })
+  }
 
   const user = result.toJSON()
 
