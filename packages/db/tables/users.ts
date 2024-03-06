@@ -1,6 +1,8 @@
 import { sequelize } from '../connect'
 import { DataTypes, Model } from 'sequelize'
 
+// todo: 添加注册来源
+
 type Table = {
   id: number
   username: string
@@ -8,8 +10,8 @@ type Table = {
   avatar: string
   city: string
   gender: number
-  register_date: Date
-  last_login_date: Date
+  register_date: number
+  last_login_date: number
   register_ip: string
   status: number
   avatar_pendant: string
@@ -59,3 +61,5 @@ export const Users = sequelize.define<Model<Table>>(
     ]
   }
 )
+
+export { Table as UsersTable }

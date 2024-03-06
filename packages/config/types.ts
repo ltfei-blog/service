@@ -18,6 +18,8 @@ export interface Config {
     }
     wx_miniprogram: {
       enable: boolean
+      appid: string
+      secret: string
     }
   }
   sql: {

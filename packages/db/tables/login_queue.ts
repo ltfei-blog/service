@@ -25,7 +25,7 @@ export type Table = {
   uuid: string
   url: string
   status: number
-  date: Date
+  date: number
 }
 
 export const LoginQueue = sequelize.define<Model<Table, Table>, Table>(

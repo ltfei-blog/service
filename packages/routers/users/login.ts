@@ -9,6 +9,7 @@ import {
 } from '@ltfei-blog/service-utils/qqConnectLoginApi'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
 import { createUserToken } from '@ltfei-blog/service-utils/token'
+import { findOrCreateUser } from '@ltfei-blog/service-utils/findOrCreateUser'
 
 const router = Router()
 
@@ -33,7 +34,7 @@ router.get('/init', async (req, res) => {
   const uuid = uuidV4()
   await LoginQueue.create({
     status: loginStatus.notLogin,
-    date: new Date(),
+    date: Date.now(),
     url,
     uuid
   })
@@ -145,33 +146,23 @@ router.post(
       })
     }
 
-    // todo: 增/查数据库
-    const [user, created] = await Users.findOrCreate({
-      where: {
+    const [user, created] = await findOrCreateUser(
+      {
         qq_openid: openid
       },
-      defaults: {
+      {
         username: data.nickname,
-        // password
         avatar: data.figureurl_qq_2 || data.figureurl_qq_1,
-        // city:
-        // gender
-        register_date: new Date(),
-        // last_login_date
+        register_date: Date.now(),
         register_ip: req.ip,
-        // status:
-        // avatar_pendant
-        // wx_openid
-        // wx_unionid
         qq_openid: openid
       }
-    })
+    )
 
     const token = await createUserToken({
       id: user.toJSON().id
     })
 
-    // todo: 生成token
     res.send({
       status: 200,
       data: {
