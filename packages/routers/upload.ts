@@ -26,10 +26,10 @@ const upload = multer({
  * 图片上传，多个上传位置使用相同逻辑
  * todo: 防止用户恶意多次上传
  */
-const paths: { type: 'cover' | 'articles'; path: string }[] = [
+const paths: { type: 'cover' | 'articles' | 'avatar'; path: string }[] = [
   { type: 'cover', path: '/articles/cover/upload' },
-  { type: 'articles', path: '/articles/upload' }
-  // avatar: ''
+  { type: 'articles', path: '/articles/upload' },
+  { type: 'avatar', path: '/users/avatar' }
 ]
 router.post(
   paths.map((e) => e.path),
