@@ -6,12 +6,25 @@ import {
   getAccessToken,
   getUserInfo,
   checkUuid
-} from '@ltfei-blog/service-utils/qqConnectLoginApi'
+} from '@ltfei-blog/service-utils/loginApi'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
 import { createUserToken } from '@ltfei-blog/service-utils/token'
 import { findOrCreateUser } from '@ltfei-blog/service-utils/findOrCreateUser'
 
 const router = Router()
+
+const generateRandomString = (length = 32) => {
+  const characters =
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$&'()*+,/:;=?@-._~"
+  let randomString = ''
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length)
+    randomString += characters.charAt(randomIndex)
+  }
+
+  return randomString
+}
 
 /**
  * init 路由
@@ -31,7 +44,7 @@ router.get('/init', async (req, res) => {
     })
     .filter((e) => e)
 
-  const uuid = uuidV4()
+  const uuid = generateRandomString()
   await LoginQueue.create({
     status: loginStatus.notLogin,
     date: Date.now(),

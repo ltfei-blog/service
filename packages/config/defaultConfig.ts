@@ -14,7 +14,8 @@ export default <Config>{
       enable: false
     },
     wx_miniprogram: {
-      enable: false
+      enable: false,
+      env_version: 'release'
     }
   },
   sql: {

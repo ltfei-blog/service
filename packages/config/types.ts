@@ -20,6 +20,13 @@ export interface Config {
       enable: boolean
       appid: string
       secret: string
+      /**
+       * 要打开的小程序版本。
+       * - 正式版为 release
+       * - 体验版为 trial
+       * - 开发版为 develop
+       */
+      env_version: 'develop' | 'release' | 'trial'
     }
   }
   sql: {
