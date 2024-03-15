@@ -74,9 +74,12 @@ router.post('/login', async (req: Request, res) => {
     }
   )
 
+  const userId = user.toJSON().id
+
   await LoginQueue.update(
     {
-      status: loginStatus.loginSucceed
+      status: loginStatus.loginSucceed,
+      user_id: userId
     },
     {
       where: {
@@ -86,7 +89,7 @@ router.post('/login', async (req: Request, res) => {
   )
 
   const token = await createUserToken({
-    id: user.toJSON().id
+    id: userId
   })
 
   res.send({

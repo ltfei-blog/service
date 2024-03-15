@@ -38,7 +38,11 @@ export type Table = {
   url: string
   status: number
   date: number
+  user_id: number
 }
+/**
+ * todo: 添加 生成端 和 登录端 和 是否完成
+ */
 
 export const LoginQueue = sequelize.define<Model<Table, Table>, Table>(
   'login_queue',
@@ -57,7 +61,8 @@ export const LoginQueue = sequelize.define<Model<Table, Table>, Table>(
      */
     url: DataTypes.CHAR,
     status: DataTypes.INTEGER,
-    date: DataTypes.BIGINT
+    date: DataTypes.BIGINT,
+    user_id: DataTypes.INTEGER
   },
   {
     timestamps: false,

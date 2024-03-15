@@ -1,7 +1,6 @@
 import { LoginQueue, loginStatus, Users } from '@ltfei-blog/service-db'
 import { getConfig } from '@ltfei-blog/service-config'
 import { Router } from 'express'
-import { v4 as uuidV4 } from 'uuid'
 import {
   getAccessToken,
   getUserInfo,
@@ -213,7 +212,22 @@ router.post('/getStatus', async (req, res) => {
     })
   }
 
-  const { status } = loginQueue.toJSON()
+  const { status, user_id } = loginQueue.toJSON()
+
+  // 登录成功，返回token
+  // todo: 将状态标记为作废
+  if (status == loginStatus.loginSucceed) {
+    const token = await createUserToken({
+      id: user_id
+    })
+    return res.send({
+      status: 200,
+      data: {
+        status,
+        token
+      }
+    })
+  }
 
   res.send({
     status: 200,
