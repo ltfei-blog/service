@@ -4,28 +4,14 @@ import { Router } from 'express'
 import {
   getAccessToken,
   getUserInfo,
-  checkUuid
+  checkUuid,
+  generateRandomString
 } from '@ltfei-blog/service-utils/loginApi'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
 import { createUserToken } from '@ltfei-blog/service-utils/token'
 import { findOrCreateUser } from '@ltfei-blog/service-utils/findOrCreateUser'
 
 const router = Router()
-
-const generateRandomString = (length = 32) => {
-  // todo: dev为方便调试，暂时把符号移除
-  // const characters =
-  //   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$&'()*+,/:;=?@-._~"
-  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-  let randomString = ''
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length)
-    randomString += characters.charAt(randomIndex)
-  }
-
-  return randomString
-}
 
 /**
  * init 路由

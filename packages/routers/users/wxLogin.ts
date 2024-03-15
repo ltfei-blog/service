@@ -4,11 +4,39 @@ import { checkLogin } from '@ltfei-blog/service-utils/wx/checkLogin'
 import { findOrCreateUser } from '@ltfei-blog/service-utils/findOrCreateUser'
 import { createUserToken } from '@ltfei-blog/service-utils/token'
 import { getUnlimited } from '@ltfei-blog/service-utils/wx/getUnlimited'
-import { loginStatus } from '@ltfei-blog/service-db'
+import { loginStatus, LoginQueue } from '@ltfei-blog/service-db'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
-import { checkUuid } from '@ltfei-blog/service-utils/loginApi'
+import { checkUuid, generateRandomString } from '@ltfei-blog/service-utils/loginApi'
+import { getConfig } from '@ltfei-blog/service-config'
 
 const router = Router()
+
+/**
+ * 微信小程序单独登录的init
+ */
+router.post('/init', async (req, res) => {
+  const { enable } = await getConfig('login_method', 'wx_miniprogram')
+  if (!enable) {
+    return res.send({
+      status: 403,
+      msg: '已禁止使用微信小程序登录'
+    })
+  }
+  const uuid = generateRandomString()
+  await LoginQueue.create({
+    status: loginStatus.scanCode,
+    date: Date.now(),
+    uuid,
+    ineffective: false
+  })
+
+  res.send({
+    status: 200,
+    data: {
+      uuid
+    }
+  })
+})
 
 interface Body {
   /**
@@ -98,22 +126,18 @@ router.post(
 /**
  * 检测 scene 是否有效，并修改状态为已扫码
  */
-router.post('/checkScene', checkUuid(), async (req: LoginRequest, res) => {
-  const { status } = req.LoginQueue
+router.post(
+  '/checkScene',
+  checkUuid(loginStatus.notLogin),
+  async (req: LoginRequest, res) => {
+    await req.UpdataLoginQueue({
+      status: loginStatus.scanCode
+    })
 
-  if (status != loginStatus.notLogin) {
     return res.send({
-      status: 403
+      status: 200
     })
   }
-
-  await req.UpdataLoginQueue({
-    status: loginStatus.scanCode
-  })
-
-  return res.send({
-    status: 200
-  })
-})
+)
 
 export default router

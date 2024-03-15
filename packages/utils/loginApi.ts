@@ -30,7 +30,6 @@ export const checkUuid = (checkStatus?: number): RequestHandler => {
     }
     const { status, date } = data.toJSON()
     // todo: 过期时间配置项
-    // todo: 标记为作废
     if (Date.now() > date.valueOf() + 1000 * 60) {
       data.update({
         ineffective: true
@@ -48,7 +47,7 @@ export const checkUuid = (checkStatus?: number): RequestHandler => {
       })
     }
     req.LoginQueue = data.toJSON()
-    req.UpdataLoginQueue = data.update
+    req.UpdataLoginQueue = data.update.bind(data)
     next()
   }
 }
@@ -100,4 +99,19 @@ export const getUserInfo = async (accessToken: string, appid: string, openid: st
     }
   })
   return data
+}
+
+export const generateRandomString = (length = 32) => {
+  // todo: dev为方便调试，暂时把符号移除
+  // const characters =
+  //   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$&'()*+,/:;=?@-._~"
+  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+  let randomString = ''
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length)
+    randomString += characters.charAt(randomIndex)
+  }
+
+  return randomString
 }
