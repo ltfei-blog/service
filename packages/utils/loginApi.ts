@@ -19,7 +19,8 @@ export const checkUuid = (checkStatus?: number): RequestHandler => {
     }
     const data = await LoginQueue.findOne({
       where: {
-        uuid
+        uuid,
+        ineffective: false
       }
     })
     if (!data) {
@@ -31,6 +32,9 @@ export const checkUuid = (checkStatus?: number): RequestHandler => {
     // todo: 过期时间配置项
     // todo: 标记为作废
     if (Date.now() > date.valueOf() + 1000 * 60) {
+      data.update({
+        ineffective: true
+      })
       return res.send({
         status: 200,
         data: {

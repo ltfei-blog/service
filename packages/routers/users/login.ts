@@ -50,7 +50,8 @@ router.get('/init', async (req, res) => {
     status: loginStatus.notLogin,
     date: Date.now(),
     url,
-    uuid
+    uuid,
+    ineffective: false
   })
 
   res.send({
@@ -71,10 +72,6 @@ router.post(
   checkUuid(loginStatus.notLogin),
   async (req: LoginRequest, res) => {
     const { uuid } = req.body
-    // 修改状态值
-    await req.UpdataLoginQueue({
-      status: loginStatus.getQqConnectUrl
-    })
     /**
      * 检查是否允许qq互联登录
      */
@@ -93,16 +90,9 @@ router.post(
       uuid
     ]
     // 可以返回后再异步处理
-    LoginQueue.update(
-      {
-        status: loginStatus.getQqConnectUrl
-      },
-      {
-        where: {
-          id: req.LoginQueue.id
-        }
-      }
-    )
+    req.UpdataLoginQueue({
+      status: loginStatus.getQqConnectUrl
+    })
 
     res.send({
       status: 200,
@@ -119,7 +109,7 @@ router.post(
 router.post(
   '/qqConnectLogin',
   checkUuid(loginStatus.getQqConnectUrl),
-  async (req, res) => {
+  async (req: LoginRequest, res) => {
     const { authorizationCode } = req.body
     const { appkey, appid, redirect_uri } = await getConfig('login_method', 'qq_connect')
 
@@ -163,6 +153,11 @@ router.post(
       }
     )
 
+    // uuid 标记作废
+    await req.UpdataLoginQueue({
+      ineffective: true
+    })
+
     const token = await createUserToken({
       id: user.toJSON().id
     })
@@ -180,8 +175,6 @@ router.post(
 /**
  * 前端轮询登陆状态
  * 验证uuid是否有效，并返回状态
- * todo: 若状态为成功，需携带token
- * todo: 成功后标记为作废，避免重复生成token
  */
 router.post('/getStatus', checkUuid(), async (req: LoginRequest, res) => {
   const { uuid } = req.body
@@ -194,8 +187,11 @@ router.post('/getStatus', checkUuid(), async (req: LoginRequest, res) => {
   const { status, user_id } = req.LoginQueue
 
   // 登录成功，返回token
-  // todo: 将状态标记为作废
   if (status == loginStatus.loginSucceed) {
+    // 将状态标记为作废 避免重复获取token
+    await req.UpdataLoginQueue({
+      ineffective: true
+    })
     const token = await createUserToken({
       id: user_id
     })
