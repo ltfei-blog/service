@@ -71,20 +71,10 @@ router.post(
   checkUuid(loginStatus.notLogin),
   async (req: LoginRequest, res) => {
     const { uuid } = req.body
-    const { status, date, id } = req.LoginQueue
-    console.log('getQqConnectUrl')
-
     // 修改状态值
-    await LoginQueue.update(
-      {
-        status: loginStatus.getQqConnectUrl
-      },
-      {
-        where: {
-          id
-        }
-      }
-    )
+    await req.UpdataLoginQueue({
+      status: loginStatus.getQqConnectUrl
+    })
     /**
      * 检查是否允许qq互联登录
      */
@@ -193,26 +183,15 @@ router.post(
  * todo: 若状态为成功，需携带token
  * todo: 成功后标记为作废，避免重复生成token
  */
-router.post('/getStatus', async (req, res) => {
+router.post('/getStatus', checkUuid(), async (req: LoginRequest, res) => {
   const { uuid } = req.body
   if (!uuid) {
     return res.send({
       status: 403
     })
   }
-  const loginQueue = await LoginQueue.findOne({
-    where: {
-      uuid
-    }
-  })
 
-  if (!loginQueue) {
-    return res.send({
-      status: 403
-    })
-  }
-
-  const { status, user_id } = loginQueue.toJSON()
+  const { status, user_id } = req.LoginQueue
 
   // 登录成功，返回token
   // todo: 将状态标记为作废

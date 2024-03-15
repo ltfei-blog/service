@@ -2,13 +2,14 @@ import axios from 'axios'
 import type { QqConnectUserInfo } from '@ltfei-blog/service-router/types'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
 import type { RequestHandler } from 'express'
-import { LoginQueue } from '@ltfei-blog/service-db'
+import { LoginQueue, loginStatus } from '@ltfei-blog/service-db'
 
 /**
  * 验证 `uuid` 的中间件
  * 验证 `uuid` 当前状态是否正确，并将登录信息放在 `req.LoginQueue`
+ * @param checkStatus 要验证的状态，如果不传递，则仅验证时间，允许所有状态
  */
-export const checkUuid = (checkStatus: number): RequestHandler => {
+export const checkUuid = (checkStatus?: number): RequestHandler => {
   return async (req: LoginRequest, res, next) => {
     const { uuid } = req.body
     if (!uuid) {
@@ -28,12 +29,22 @@ export const checkUuid = (checkStatus: number): RequestHandler => {
     }
     const { status, date } = data.toJSON()
     // todo: 过期时间配置项
-    if (status != checkStatus || Date.now() > date.valueOf() + 1000 * 60) {
+    // todo: 标记为作废
+    if (Date.now() > date.valueOf() + 1000 * 60) {
+      return res.send({
+        status: 200,
+        data: {
+          status: loginStatus.loginFailedTimeout
+        }
+      })
+    }
+    if (checkStatus && status != checkStatus) {
       return res.send({
         status: 403
       })
     }
     req.LoginQueue = data.toJSON()
+    req.UpdataLoginQueue = data.update
     next()
   }
 }

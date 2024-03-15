@@ -1,13 +1,12 @@
-import type { Request } from '@ltfei-blog/service-app/types'
 import { Router } from 'express'
 import Joi from 'joi'
 import { checkLogin } from '@ltfei-blog/service-utils/wx/checkLogin'
 import { findOrCreateUser } from '@ltfei-blog/service-utils/findOrCreateUser'
 import { createUserToken } from '@ltfei-blog/service-utils/token'
 import { getUnlimited } from '@ltfei-blog/service-utils/wx/getUnlimited'
-import { loginStatus, LoginQueue } from '@ltfei-blog/service-db'
-import { checkUuid } from '@ltfei-blog/service-utils/loginApi'
+import { loginStatus } from '@ltfei-blog/service-db'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
+import { checkUuid } from '@ltfei-blog/service-utils/loginApi'
 
 const router = Router()
 
@@ -16,18 +15,18 @@ interface Body {
    * 微信小程序 调用 wx.login 获取的code
    */
   code: string
-  scene: string
+  uuid: string
 }
 
 const schema = Joi.object({
   code: Joi.string().length(32).required(),
-  scene: Joi.string().max(32)
+  uuid: Joi.string().max(32)
 })
 
 /**
  * 小程序登录(仅在小程序调用)
  */
-router.post('/login', async (req: Request, res) => {
+router.post('/login', checkUuid(loginStatus.scanCode), async (req: LoginRequest, res) => {
   const validate = schema.validate(req.body)
 
   if (validate.error) {
@@ -36,19 +35,7 @@ router.post('/login', async (req: Request, res) => {
     })
   }
 
-  const { code, scene } = req.body as Body
-
-  // // todo: 验证 scene
-  if (!scene) {
-    return res.send({
-      status: 403
-    })
-  }
-  // const loginQueue = await LoginQueue.findOne({
-  //   where: {
-  //     uuid: scene
-  //   }
-  // })
+  const { code } = req.body as Body
 
   const login = await checkLogin(code)
   if (login.err != false) {
@@ -75,18 +62,11 @@ router.post('/login', async (req: Request, res) => {
   )
 
   const userId = user.toJSON().id
-
-  await LoginQueue.update(
-    {
-      status: loginStatus.loginSucceed,
-      user_id: userId
-    },
-    {
-      where: {
-        uuid: scene
-      }
-    }
-  )
+  // 修改登录状态
+  await req.UpdataLoginQueue({
+    status: loginStatus.loginSucceed,
+    user_id: userId
+  })
 
   const token = await createUserToken({
     id: userId
@@ -117,29 +97,16 @@ router.post(
 /**
  * 检测 scene 是否有效，并修改状态为已扫码
  */
-router.post('/checkScene', async (req, res) => {
-  const { scene } = req.body
+router.post('/checkScene', checkUuid(), async (req: LoginRequest, res) => {
+  const { status } = req.LoginQueue
 
-  if (!scene) {
+  if (status != loginStatus.notLogin) {
     return res.send({
       status: 403
     })
   }
 
-  const data = await LoginQueue.findOne({
-    where: {
-      uuid: scene
-    }
-  })
-  // todo: 是否过期
-
-  if (!data || data.toJSON().status != loginStatus.notLogin) {
-    return res.send({
-      status: 403
-    })
-  }
-
-  data.update({
+  await req.UpdataLoginQueue({
     status: loginStatus.scanCode
   })
 

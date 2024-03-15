@@ -1,5 +1,6 @@
 import type { Request } from 'express'
 import type { Table } from '@ltfei-blog/service-db'
+import type { Model } from 'sequelize'
 
 export interface QqConnectUserInfo {
   ret: number
@@ -40,4 +41,5 @@ export interface QqConnectUserInfo {
 
 export interface LoginRequest extends Request {
   LoginQueue: Table
+  UpdataLoginQueue: (key: Partial<Table>) => Promise<Model<Table, Table>>
 }
