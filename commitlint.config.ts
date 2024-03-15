@@ -27,8 +27,9 @@ export default {
       ]
     ],
     'scope-empty': [0],
-    'subject-empty': [2, 'never'],
-    'subject-case': [0]
+    'scope-case': [0],
+    'subject-case': [0],
+    'subject-empty': [2, 'never']
   },
   prompt: {
     settings: {},
