@@ -155,7 +155,8 @@ router.post(
 
     // uuid 标记作废
     await req.UpdataLoginQueue({
-      ineffective: true
+      ineffective: true,
+      auth_method: 'qq_connect'
     })
 
     const token = await createUserToken({

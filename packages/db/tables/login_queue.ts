@@ -1,5 +1,6 @@
 import { sequelize } from '../connect'
 import { DataTypes, Model } from 'sequelize'
+import { Config } from '@ltfei-blog/service-config/types'
 
 export const loginStatus = {
   /**
@@ -40,6 +41,7 @@ export type Table = {
   date: number
   user_id: number
   ineffective: boolean
+  auth_method: keyof Config['login_method']
 }
 /**
  * todo: 添加 生成端 和 登录端 和 是否完成
@@ -57,7 +59,7 @@ export const LoginQueue = sequelize.define<Model<Table, Table>, Table>(
       type: DataTypes.UUID
     },
     /**
-     * 登录后的回调地址
+     * 登录后前端页面的回调地址
      * todo: 增加验证域名是否合法
      */
     url: DataTypes.CHAR,
@@ -67,7 +69,8 @@ export const LoginQueue = sequelize.define<Model<Table, Table>, Table>(
     /**
      * 是否失效
      */
-    ineffective: DataTypes.BOOLEAN
+    ineffective: DataTypes.BOOLEAN,
+    auth_method: DataTypes.CHAR
   },
   {
     timestamps: false,

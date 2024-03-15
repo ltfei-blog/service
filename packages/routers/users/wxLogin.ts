@@ -65,7 +65,8 @@ router.post('/login', checkUuid(loginStatus.scanCode), async (req: LoginRequest,
   // 修改登录状态
   await req.UpdataLoginQueue({
     status: loginStatus.loginSucceed,
-    user_id: userId
+    user_id: userId,
+    auth_method: 'wx_miniprogram'
   })
 
   const token = await createUserToken({
