@@ -39,13 +39,16 @@ router.post('/login', async (req: Request, res) => {
   const { code, scene } = req.body as Body
 
   // // todo: 验证 scene
-  // if (scene) {
-  //   LoginQueue.findOne({
-  //     where: {
-  //       uuid: scene
-  //     }
-  //   })
-  // }
+  if (!scene) {
+    return res.send({
+      status: 403
+    })
+  }
+  // const loginQueue = await LoginQueue.findOne({
+  //   where: {
+  //     uuid: scene
+  //   }
+  // })
 
   const login = await checkLogin(code)
   if (login.err != false) {

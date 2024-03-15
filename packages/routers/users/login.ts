@@ -14,8 +14,10 @@ import { findOrCreateUser } from '@ltfei-blog/service-utils/findOrCreateUser'
 const router = Router()
 
 const generateRandomString = (length = 32) => {
-  const characters =
-    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$&'()*+,/:;=?@-._~"
+  // todo: dev为方便调试，暂时把符号移除
+  // const characters =
+  //   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$&'()*+,/:;=?@-._~"
+  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
   let randomString = ''
 
   for (let i = 0; i < length; i++) {
@@ -185,5 +187,40 @@ router.post(
     })
   }
 )
+
+/**
+ * 前端轮询登陆状态
+ * 验证uuid是否有效，并返回状态
+ * todo: 若状态为成功，需携带token
+ * todo: 成功后标记为作废，避免重复生成token
+ */
+router.post('/getStatus', async (req, res) => {
+  const { uuid } = req.body
+  if (!uuid) {
+    return res.send({
+      status: 403
+    })
+  }
+  const loginQueue = await LoginQueue.findOne({
+    where: {
+      uuid
+    }
+  })
+
+  if (!loginQueue) {
+    return res.send({
+      status: 403
+    })
+  }
+
+  const { status } = loginQueue.toJSON()
+
+  res.send({
+    status: 200,
+    data: {
+      status
+    }
+  })
+})
 
 export default router
