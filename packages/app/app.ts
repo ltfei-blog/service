@@ -9,6 +9,7 @@ import cors from 'cors'
 import { Request } from './types'
 import './procexit'
 import { createUserToken } from '@ltfei-blog/service-utils/token'
+import { validate } from '@ltfei-blog/service-utils/validate'
 const t = await createUserToken({
   id: 1
 })
@@ -85,6 +86,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.get(baseUrl, (req, res) => {
   res.send({ status: 200, msg: 'ltfei-blog service is running' })
 })
+
+app.use(validate)
 
 // routers
 app.use(baseUrl, router)

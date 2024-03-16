@@ -2,18 +2,24 @@ import { Router } from 'express'
 import { Users, Articles, Likes, sequelize } from '@ltfei-blog/service-db'
 import { Op } from 'sequelize'
 import type { Request } from '@ltfei-blog/service-app/types'
+import joi from 'joi'
 
 const router = Router()
 
 router.post('/get', async (req: Request, res) => {
-  // todo: 验证id
-  const { id = req.auth.id } = req.body
+  const data = req.validateBody<{
+    id: number
+  }>({
+    id: joi.number().required()
+  })
 
-  if (!id) {
+  if (!data) {
     return res.send({
       status: 403
     })
   }
+
+  const { id } = data
 
   const user = await Users.findOne({
     attributes: [
@@ -54,13 +60,21 @@ router.post('/get', async (req: Request, res) => {
  * 获取用户投稿的作品
  */
 router.post('/getPost', async (req: Request, res) => {
-  // todo: 验证id
-  const { id = req.auth?.id, laseMinTime = Date.now() } = req.body
-  if (!id) {
+  const data = req.validateBody<{
+    id: number
+    laseMinTime: number
+  }>({
+    id: joi.number().required(),
+    laseMinTime: joi.number()
+  })
+
+  if (!data) {
     return res.send({
       status: 403
     })
   }
+
+  const { id, laseMinTime = Date.now() } = data
 
   const articles = await Articles.findAll({
     attributes: [
