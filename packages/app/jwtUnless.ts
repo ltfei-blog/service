@@ -5,6 +5,7 @@ const paths: string[] = [
   '/users/login/getStatus',
   '/users/wxLogin/',
   '/users/member/get',
+  // '/users/member/getPost',
   '/articles/list',
   '/articles/details',
   '/comment/list'
