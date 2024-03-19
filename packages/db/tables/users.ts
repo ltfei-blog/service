@@ -15,6 +15,7 @@ type Table = {
   register_ip: string
   status: number
   avatar_pendant: string
+  desc: string
   wx_openid: string
   wx_unionid: string
   qq_openid: string
@@ -40,6 +41,7 @@ export const Users = sequelize.define<Model<Table>>(
     register_ip: DataTypes.CHAR,
     status: DataTypes.INTEGER,
     avatar_pendant: DataTypes.CHAR,
+    desc: DataTypes.CHAR,
     // 第三方平台登录
     wx_openid: {
       type: DataTypes.CHAR
