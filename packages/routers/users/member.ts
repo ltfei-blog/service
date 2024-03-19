@@ -48,7 +48,14 @@ router.post('/get', async (req: Request, res) => {
         sequelize.literal(
           `(select count(*) from follows where status=1 and target_user_id = users.id)`
         ),
-        'fans'
+        'followers'
+      ],
+      // 统计关注
+      [
+        sequelize.literal(
+          `(select count(*) from follows where status=1 and user_id = users.id)`
+        ),
+        'following'
       ]
       // todo: 统计 关注 等
       // todo: 判断是否已经关注此用户
