@@ -15,5 +15,6 @@ export * from './tables/comment_likes'
 export * from './tables/permission'
 export * from './tables/permission_groups'
 export * from './tables/permission_user_group'
+export * from './tables/follow'
 
 import('./assocs')
