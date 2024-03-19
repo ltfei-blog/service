@@ -77,7 +77,6 @@ router.post('/login', checkUuid(loginStatus.scanCode), async (req: LoginRequest,
   const { openid, unionid } = login
   const [user, created] = await findOrCreateUser(
     {
-      qq_openid: openid,
       wx_unionid: unionid
     },
     {
