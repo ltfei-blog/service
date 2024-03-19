@@ -37,13 +37,21 @@ router.post('/get', async (req: Request, res) => {
           `(SELECT COUNT(likes.id) AS likes_count
           FROM articles
                    LEFT JOIN likes ON articles.id = likes.articles
-          WHERE articles.author = ${id}
+          WHERE articles.author = users.id
             AND likes.liked = 1
           GROUP BY articles.author)`
         ),
         'get_likes'
+      ],
+      // 统计粉丝
+      [
+        sequelize.literal(
+          `(select count(*) from follows where status=1 and target_user_id = users.id)`
+        ),
+        'fans'
       ]
-      // todo: 统计 关注 粉丝 等
+      // todo: 统计 关注 等
+      // todo: 判断是否已经关注此用户
     ],
     where: {
       id
