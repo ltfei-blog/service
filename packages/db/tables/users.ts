@@ -9,7 +9,12 @@ type Table = {
   password: string
   avatar: string
   city: string
-  gender: number
+  /**
+   * 0 女
+   * 1 男
+   * 2 保密
+   */
+  gender: 0 | 1 | 2
   register_date: number
   last_login_date: number
   register_ip: string
@@ -35,7 +40,10 @@ export const Users = sequelize.define<Model<Table>>(
     password: DataTypes.CHAR,
     avatar: DataTypes.CHAR,
     city: DataTypes.CHAR(50),
-    gender: DataTypes.INTEGER,
+    gender: {
+      type: DataTypes.INTEGER,
+      defaultValue: 2
+    },
     register_date: DataTypes.BIGINT,
     last_login_date: DataTypes.BIGINT,
     register_ip: DataTypes.CHAR,

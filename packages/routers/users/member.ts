@@ -28,6 +28,7 @@ router.post('/get', async (req: Request, res) => {
       'avatar',
       'city',
       'gender',
+      'desc',
       'register_date',
       'status',
       'avatar_pendant',

@@ -10,13 +10,15 @@ interface Body {
   avatar: string
   city: string
   gender: 0 | 1
+  desc: string
 }
 
 const schema = Joi.object({
   username: Joi.string().min(2).max(32),
   avatar: Joi.string(),
   city: Joi.string().max(5),
-  gender: Joi.number().allow(1).allow(0)
+  gender: Joi.number().allow(1).allow(0).allow(2),
+  desc: Joi.string().min(1).max(50)
 })
 
 router.post('/editUserInfo', async (req: Request, res) => {
@@ -28,14 +30,15 @@ router.post('/editUserInfo', async (req: Request, res) => {
     })
   }
   const auth = req.auth
-  const { username, avatar, city, gender } = req.body as Body
+  const { username, avatar, city, gender, desc } = req.body as Body
 
   await Users.update(
     {
       username,
       avatar,
       city,
-      gender
+      gender,
+      desc
     },
     {
       where: {

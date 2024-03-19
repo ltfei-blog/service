@@ -27,6 +27,7 @@ router.post('/', async (req: Request, res) => {
       avatar: user.avatar,
       city: user.city,
       gender: user.gender,
+      desc: user.desc,
       register_date: user.register_date,
       last_login_date: user.last_login_date,
       status: user.status,
