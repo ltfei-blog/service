@@ -5,6 +5,7 @@ import publish from './publish'
 import list from './list'
 import details from './details'
 import like from './like'
+import search from './search'
 import { auth, PERMISSIONS } from '@ltfei-blog/service-permission'
 
 const router = Router()
@@ -15,5 +16,6 @@ router.use('/publish', auth(PERMISSIONS.creator_publishArticle), publish)
 router.use('/list', list)
 router.use('/details', details)
 router.use('/like', auth(PERMISSIONS.contentOperation_like), like)
+router.use(search)
 
 export default router
