@@ -138,4 +138,90 @@ router.post('/getPost', async (req: Request, res) => {
   })
 })
 
+/**
+ * 获取用户的喜欢
+ */
+router.post('/getLikes', async (req: Request, res) => {
+  const data = req.validateBody<{
+    id: number
+    laseMinTime: number
+  }>({
+    id: joi.number(),
+    laseMinTime: joi.number()
+  })
+
+  if (!data) {
+    return res.send({
+      status: 403
+    })
+  }
+
+  const { laseMinTime = Date.now() } = data
+
+  if (!req.auth) {
+    return res.send({
+      status: 4001
+    })
+  }
+
+  const id = req.auth.id
+  // todo: 暂时先仅支持获取自己的
+  const likes = await Likes.findAll({
+    attributes: [
+      'id',
+      'articles',
+      'liked',
+      'user',
+      'create_time',
+      'last_edit_time',
+      // [sequelize.fn('count', sequelize.col('likes_data.liked')), 'likes_count'],
+      [
+        sequelize.literal(
+          `(select count(likes_count.id) from likes likes_count where likes_count.articles = likes.articles)`
+        ),
+        'likes_count'
+      ],
+      [
+        sequelize.literal(
+          `(select count(comments.id) from comments where comments.article_id = likes.articles)`
+        ),
+        'comments_count'
+      ]
+    ],
+    where: {
+      user: id,
+      liked: 1,
+      create_time: {
+        [Op.lt]: laseMinTime
+      }
+    },
+    include: [
+      {
+        model: Articles,
+        as: 'user_likes_data',
+        required: false,
+        where: {
+          status: 1
+        },
+        attributes: [
+          'id',
+          'title',
+          'content',
+          'cover',
+          'desc',
+          'status',
+          'author',
+          'create_time',
+          'last_edit_time'
+        ]
+      }
+    ]
+  })
+
+  res.send({
+    status: 200,
+    data: likes
+  })
+})
+
 export default router

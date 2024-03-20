@@ -20,6 +20,11 @@ Articles.belongsTo(Likes, {
   foreignKey: 'id',
   targetKey: 'articles'
 })
+Likes.hasOne(Articles, {
+  as: 'user_likes_data',
+  sourceKey: 'articles',
+  foreignKey: 'id'
+})
 
 /**
  * 文章作者信息
