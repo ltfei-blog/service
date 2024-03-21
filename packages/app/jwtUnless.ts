@@ -8,6 +8,7 @@ const paths: string[] = [
   // '/users/member/getPost',
   '/articles/list',
   '/articles/details',
+  '/articles/search',
   '/comment/list'
 ]
 
