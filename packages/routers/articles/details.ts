@@ -1,11 +1,13 @@
 import { Router } from 'express'
 import type { Request } from '@ltfei-blog/service-app/types'
-import { Articles, Users, Likes, Comments, sequelize } from '@ltfei-blog/service-db'
+import { Articles, Users, Likes, sequelize } from '@ltfei-blog/service-db'
+import { parseMarkdown } from '@ltfei-blog/service-utils/parseMarkdown'
 
 const router = Router()
 
 router.post('/:id', async (req: Request, res) => {
   const { id } = req.params
+  const { type } = req.body
   const auth = req.auth
   if (!id) {
     return res.send({
@@ -70,9 +72,15 @@ router.post('/:id', async (req: Request, res) => {
     })
   }
 
+  const data = results.toJSON()
+
+  if (type == 'html') {
+    data.content = parseMarkdown(data.content)
+  }
+
   res.send({
     status: 200,
-    data: results.toJSON()
+    data
   })
 })
 

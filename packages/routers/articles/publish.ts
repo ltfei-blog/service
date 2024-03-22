@@ -17,7 +17,7 @@ interface Body {
 const schema = Joi.object({
   title: Joi.string().min(2).max(40).required(),
   desc: Joi.string().min(10).max(100).required(),
-  cover: Joi.string(),
+  cover: Joi.string().allow(null),
   content: Joi.string().min(100).max(40000).required(),
   type: Joi.string().valid('add').valid('edit').required(),
   articlesId: Joi.number().optional().allow(null)
@@ -33,6 +33,7 @@ router.post('/', async (req: Request, res) => {
    * 验证参数
    */
   const validate = schema.validate(req.body)
+  console.log(validate)
   if (validate.error) {
     return res.send({
       status: 403
