@@ -203,6 +203,7 @@ router.post('/getLikes', async (req: Request, res) => {
         where: {
           status: 1
         },
+        include: [{ model: Users, as: 'author_data' }],
         attributes: [
           'id',
           'title',

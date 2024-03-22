@@ -34,6 +34,11 @@ Articles.hasOne(Users, {
   sourceKey: 'author',
   foreignKey: 'id'
 })
+// Likes.hasOne(Users, {
+//   as: 'author_data',
+//   sourceKey: 'author',
+//   foreignKey: 'id'
+// })
 
 /**
  * 上传文件的用户
