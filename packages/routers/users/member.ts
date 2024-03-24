@@ -1,5 +1,11 @@
 import { Router } from 'express'
-import { Users, Articles, Likes, sequelize } from '@ltfei-blog/service-db'
+import {
+  Users,
+  Articles,
+  Likes,
+  sequelize,
+  BrowsingHistory
+} from '@ltfei-blog/service-db'
 import { Op } from 'sequelize'
 import type { Request } from '@ltfei-blog/service-app/types'
 import joi from 'joi'
@@ -222,6 +228,56 @@ router.post('/getLikes', async (req: Request, res) => {
   res.send({
     status: 200,
     data: likes
+  })
+})
+
+router.post('/getHistory', async (req: Request, res) => {
+  const data = req.validateBody<{
+    id: number
+    laseMinTime: number
+  }>({
+    id: joi.number(),
+    laseMinTime: joi.number()
+  })
+
+  if (!data) {
+    return res.send({
+      status: 403
+    })
+  }
+
+  const { laseMinTime = Date.now() } = data
+
+  if (!req.auth) {
+    return res.send({
+      status: 4001
+    })
+  }
+
+  const id = req.auth.id
+
+  // todo: 暂时仅支持获取自己的
+  const browsingHistory = await BrowsingHistory.findAll({
+    where: {
+      user_id: id
+    },
+    include: [
+      {
+        model: Articles,
+        as: 'browsing_history_article_data',
+        include: [
+          {
+            model: Users,
+            as: 'author_data'
+          }
+        ]
+      }
+    ]
+  })
+
+  res.send({
+    status: 200,
+    data: browsingHistory
   })
 })
 

@@ -1,15 +1,23 @@
 /**
  * 定义表之间的关联
  */
-import { Likes, Articles, Users, Uploads, Comments, CommentLikes } from './'
+import {
+  Likes,
+  Articles,
+  Users,
+  Uploads,
+  Comments,
+  CommentLikes,
+  BrowsingHistory
+} from './'
 
 /**
  * 文章点赞
  */
-Likes.hasMany(Articles, {
-  as: 'like_data',
-  foreignKey: 'articles'
-})
+// Likes.hasMany(Articles, {
+//   as: 'like_data',
+//   foreignKey: 'id'
+// })
 Articles.belongsTo(Likes, {
   as: 'likes_data',
   foreignKey: 'id',
@@ -52,10 +60,10 @@ Uploads.hasOne(Users, {
 /**
  * 文章评论数量
  */
-Comments.hasMany(Articles, {
-  as: 'comment_count_data',
-  foreignKey: 'article_id'
-})
+// Comments.hasMany(Articles, {
+//   as: 'comment_count_data',
+//   foreignKey: 'id'
+// })
 Articles.belongsTo(Comments, {
   as: 'comment_count',
   foreignKey: 'id',
@@ -75,9 +83,9 @@ Comments.hasOne(Users, {
   sourceKey: 'user_id',
   foreignKey: 'id'
 })
-Comments.hasMany(Comments, {
-  foreignKey: 'comment_id'
-})
+// Comments.hasMany(Comments, {
+//   foreignKey: 'comment_id'
+// })
 Comments.belongsTo(Comments, {
   as: 'reply_data',
   foreignKey: 'id',
@@ -87,10 +95,10 @@ Comments.belongsTo(Comments, {
 /**
  * 评论点赞
  */
-CommentLikes.hasMany(Comments, {
-  as: 'like_data',
-  foreignKey: 'comment'
-})
+// CommentLikes.hasMany(Comments, {
+//   as: 'like_data',
+//   foreignKey: 'comment'
+// })
 Comments.belongsTo(CommentLikes, {
   as: 'likes_data',
   foreignKey: 'id',
@@ -100,4 +108,16 @@ Comments.belongsTo(CommentLikes, {
   as: 'liked_data',
   foreignKey: 'id',
   targetKey: 'comment'
+})
+
+/**
+ * 浏览历史
+ */
+// Articles.hasMany(BrowsingHistory, {
+//   foreignKey: 'article_id'
+// })
+BrowsingHistory.belongsTo(Articles, {
+  foreignKey: 'article_id',
+  targetKey: 'id',
+  as: 'browsing_history_article_data'
 })
