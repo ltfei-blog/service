@@ -2,6 +2,7 @@ import { Router } from 'express'
 import type { Request } from '@ltfei-blog/service-app/types'
 import { Articles, Users, Likes, sequelize } from '@ltfei-blog/service-db'
 import { parseMarkdown } from '@ltfei-blog/service-utils/parseMarkdown'
+import { insertBrowsingHistory } from '@ltfei-blog/service-utils/browsingHistory'
 
 const router = Router()
 
@@ -82,6 +83,10 @@ router.post('/:id', async (req: Request, res) => {
     status: 200,
     data
   })
+
+  if (auth) {
+    insertBrowsingHistory(auth.id, Number(id))
+  }
 })
 
 export default router

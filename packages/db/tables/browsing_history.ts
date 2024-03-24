@@ -3,46 +3,24 @@ import { DataTypes, Model } from 'sequelize'
 
 type Table = {
   id: number
-  title: string
-  content: string
-  cover: string
-  desc: string
-  /**
-   * - 1 正常
-   */
-  status: number
-  author: number
+  user_id: number
+  article_id: number
   create_time: number
   last_edit_time: number
 }
 
-export const Articles = sequelize.define<Model<Table, Table>>(
-  'articles',
+export const BrowsingHistory = sequelize.define<Model<Table, Table>>(
+  'browsing_history',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    title: {
-      type: DataTypes.CHAR(100),
-      allowNull: false
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    cover: {
-      type: DataTypes.CHAR(200)
-    },
-    desc: {
-      type: DataTypes.CHAR(100),
-      allowNull: false
-    },
-    status: {
+    user_id: {
       type: DataTypes.INTEGER
     },
-    author: {
+    article_id: {
       type: DataTypes.INTEGER
     },
     create_time: {
@@ -60,7 +38,7 @@ export const Articles = sequelize.define<Model<Table, Table>>(
         unique: true
       },
       {
-        fields: ['author', 'create_time', 'last_edit_time']
+        fields: ['user_id', 'article_id', 'create_time', 'last_edit_time']
       }
     ]
   }
