@@ -265,6 +265,29 @@ router.post('/getHistory', async (req: Request, res) => {
       {
         model: Articles,
         as: 'browsing_history_article_data',
+        attributes: [
+          'id',
+          'title',
+          'content',
+          'cover',
+          'desc',
+          'status',
+          'author',
+          'create_time',
+          'last_edit_time',
+          [
+            sequelize.literal(
+              `(select count(likes_count.id) from likes likes_count where likes_count.articles = browsing_history_article_data.id)`
+            ),
+            'likes_count'
+          ],
+          [
+            sequelize.literal(
+              `(select count(comments.id) from comments where comments.article_id = browsing_history_article_data.id)`
+            ),
+            'comments_count'
+          ]
+        ],
         include: [
           {
             model: Users,
