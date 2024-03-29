@@ -1,30 +1,26 @@
-import { Config } from './types'
+import { Config as ConfigType, GetConfig } from './types'
 import localConfig from './local'
 import defaultConfig from './defaultConfig'
+import { queryConfig } from './sql'
+import { getLocalConfig } from './getLocalConfig'
 
-type GetConfig = {
-  <T extends keyof Config, K extends keyof Config[T]>(
-    key: T,
-    name: K
-  ): Promise<Config[T][K]>
-  <T extends keyof Config>(key: T): Promise<Config[T]>
-}
-
+// todo: 分离文件
 export const getConfig: GetConfig = async <
-  T extends keyof Config,
-  K extends keyof Config[T]
+  T extends keyof ConfigType,
+  K extends keyof ConfigType[T]
 >(
   key: T,
   name?: K
-): Promise<Config[T][K] | Config[T]> => {
+): Promise<ConfigType[T][K] | ConfigType[T]> => {
+  // 匹配数据库
+  const sqlValue = await queryConfig(key, name)
+  if (!sqlValue) {
+    return getLocalConfig(key, name)
+  }
+
   if (!name) {
-    return { ...defaultConfig[key], ...localConfig[key] }
+    // 配置项不一定完整，需要按照优先级整合为完整配置项
+    return { ...defaultConfig[key], ...localConfig[key], ...sqlValue }
   }
-  // todo: 修改匹配顺序
-  if (!localConfig[key] || !localConfig[key][name]) {
-    return defaultConfig[key][name]
-  }
-  if (localConfig[key][name]) {
-    return localConfig[key][name]
-  }
+  return sqlValue
 }

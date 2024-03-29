@@ -17,5 +17,6 @@ export * from './tables/permission_groups'
 export * from './tables/permission_user_group'
 export * from './tables/follow'
 export * from './tables/browsing_history'
+export * from './tables/config'
 
 import('./assocs')

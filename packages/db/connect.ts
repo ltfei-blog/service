@@ -1,12 +1,12 @@
-import { getConfig } from '@ltfei-blog/service-config'
+import { getLocalConfig } from '@ltfei-blog/service-config/getLocalConfig'
 import { Sequelize } from 'sequelize'
 import { db as logger } from '@ltfei-blog/service-utils/log'
 
-const sqlType = await getConfig('sql', 'type')
+const sqlType = await getLocalConfig('sql', 'type')
 
 const connect = async () => {
   if (sqlType == 'mysql') {
-    const { database, host, password, port, username } = await getConfig('mysql')
+    const { database, host, password, port, username } = await getLocalConfig('mysql')
     return new Sequelize({
       dialect: 'mysql',
       database,
@@ -18,7 +18,7 @@ const connect = async () => {
       logging: logger.info.bind(logger)
     })
   } else if (sqlType == 'sqlite') {
-    const storage = await getConfig('sqlite', 'storage')
+    const storage = await getLocalConfig('sqlite', 'storage')
     return new Sequelize({
       dialect: 'sqlite',
       storage

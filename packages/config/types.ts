@@ -55,3 +55,15 @@ export interface Config {
     host: string
   }
 }
+
+export type GetConfig = {
+  <T extends keyof Config, K extends keyof Config[T]>(
+    key: T,
+    name: K
+  ): Promise<Config[T][K]>
+  <T extends keyof Config>(key: T): Promise<Config[T]>
+}
+
+export type DeepPartial<T> = {
+  [U in keyof T]?: T[U] extends object ? DeepPartial<T[U]> : T[U]
+}
