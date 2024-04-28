@@ -1,10 +1,28 @@
 import { Router } from 'express'
 import type { Request } from '@ltfei-blog/service-app/types'
 import { Articles, Users, Likes, Comments, sequelize } from '@ltfei-blog/service-db'
+import { Op } from 'sequelize'
+import Joi from 'joi'
 
 const router = Router()
 
 router.post('/', async (req: Request, res) => {
+  const body = req.validateBody<{
+    count: number
+    cursor: number
+  }>({
+    count: Joi.number().integer().min(1).max(100).default(10),
+    cursor: Joi.number().integer().min(0)
+  })
+
+  if (!body) {
+    return res.send({
+      status: 403
+    })
+  }
+
+  const { count = 10, cursor = 0 } = body
+
   // todo: 分页查询
   const results = await Articles.findAll({
     attributes: [
@@ -44,7 +62,9 @@ router.post('/', async (req: Request, res) => {
         required: false
       }
     ],
-    group: ['articles.id']
+    group: ['articles.id'],
+    offset: Number(cursor),
+    limit: Number(count)
   })
 
   res.send({
