@@ -65,3 +65,5 @@ export const Articles = sequelize.define<Model<Table, Table>>(
     ]
   }
 )
+
+export { Table as ArticlesTable }
