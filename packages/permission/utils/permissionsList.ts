@@ -4,6 +4,10 @@
 
 export type Permission = {
   key: string
+  /**
+   * 1 允许
+   * 2 拒绝
+   */
   defaultValue: 1 | 2
 }
 
@@ -98,5 +102,60 @@ export const PERMISSIONS = {
   /**
    * 关注
    */
-  userOperation_follow: permission('userOperation_follow', 1)
+  userOperation_follow: permission('userOperation_follow', 1),
+
+  // 后台
+  /**
+   * 后台登录权限
+   */
+  admin_login: permission('admin_login', 2),
+
+  /**
+   * 后台文章管理
+   * - 添加文章
+   * - 修改文章
+   * - 删除文章
+   * - 查询文章
+   * - 审核文章
+   */
+  admin_article: permission('admin_article', 2),
+  admin_articleAdd: permission('admin_articleAdd', 2),
+  admin_articleEdit: permission('admin_articleEdit', 2),
+  admin_articleDelete: permission('admin_articleDelete', 2),
+  admin_articleList: permission('admin_articleList', 2),
+  admin_articleAudit: permission('admin_articleAudit', 2),
+
+  /**
+   * 后台评论管理
+   * - 删除评论
+   * - 修改评论
+   * - 查询评论
+   * - 审核评论
+   */
+  admin_comment: permission('admin_comment', 2),
+  admin_commentEdit: permission('admin_commentEdit', 2),
+  admin_commentList: permission('admin_commentList', 2),
+  admin_commentAudit: permission('admin_commentAudit', 2),
+
+  /**
+   * 后台用户管理
+   * - 添加用户
+   * - 删除用户
+   * - 修改用户
+   * - 查询用户
+   */
+  admin_user: permission('admin_user', 2),
+  admin_userAdd: permission('admin_userAdd', 2),
+  admin_userDelete: permission('admin_userDelete', 2),
+  admin_userEdit: permission('admin_userEdit', 2),
+  admin_userList: permission('admin_userList', 2),
+
+  /**
+   * 后台系统设置
+   * - 查看设置项
+   * - 修改设置项
+   */
+  admin_setting: permission('admin_setting', 2),
+  admin_settingList: permission('admin_settingList', 2),
+  admin_settingEdit: permission('admin_settingEdit', 2)
 }
