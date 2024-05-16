@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { Articles, ArticlesAudit, Comments } from '@ltfei-blog/service-db'
+import { Articles, ArticlesAudit, Comments, Users } from '@ltfei-blog/service-db'
 import { PERMISSIONS, getUserPermission } from '@ltfei-blog/service-permission'
 import type { Request } from '@ltfei-blog/service-app/types'
-import { Op } from 'sequelize'
+import { Model, ModelCtor, ModelStatic, Op } from 'sequelize'
 import os from 'os'
 
 interface Data {
@@ -33,20 +33,33 @@ const recentTime = 1000 * 60 * 60 * 24 * 7
 
 const router = Router()
 
-const getArticle = async () => {
-  const count = await Articles.count({
+const countModel = async (
+  model: ModelStatic<Model>,
+  where: object,
+  dateKey = 'create_time'
+) => {
+  const count = await model.count({
     where: {
-      status: 1
+      ...where
     }
   })
-  const newCount = await Articles.count({
+  const newCount = await model.count({
     where: {
-      status: 1,
-      create_time: {
+      ...where,
+      [dateKey]: {
         [Op.gt]: Date.now() - recentTime
       }
     }
   })
+
+  return {
+    count,
+    newCount
+  }
+}
+
+const getArticle = async () => {
+  const { count, newCount } = await countModel(Articles, { status: 1 })
   const audit = await ArticlesAudit.count({
     where: {
       status: 0
@@ -61,25 +74,18 @@ const getArticle = async () => {
 }
 
 const getComment = async () => {
-  const count = await Comments.count({
-    where: {
-      // status: 1
-    }
-  })
-  const newCount = await Comments.count({
-    where: {
-      // status: 1,
-      create_time: {
-        [Op.gt]: Date.now() - recentTime
-      }
-    }
-  })
+  const { count, newCount } = await countModel(Comments, {})
+  const audit = 0
 
-  // const audit = await ArticlesAudit.count({
-  //   where: {
-  //     status: 0
-  //   }
-  // })
+  return {
+    count,
+    new: newCount,
+    audit
+  }
+}
+
+const getUser = async () => {
+  const { count, newCount } = await countModel(Users, {}, 'register_date')
   const audit = 0
 
   return {
@@ -123,6 +129,11 @@ router.get('/', async (req: Request, res) => {
   const commentPermission = await getUserPermission(user.id, PERMISSIONS.admin_comment)
   if (commentPermission == 1) {
     data.comment = await getComment()
+  }
+  // 用户
+  const userPermission = await getUserPermission(user.id, PERMISSIONS.admin_user)
+  if (userPermission == 1) {
+    data.user = await getUser()
   }
 
   data.system = getSystem()
