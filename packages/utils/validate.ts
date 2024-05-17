@@ -11,6 +11,9 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
     const validate = schema.validate(req.body)
 
     if (validate.error) {
+      // todo: dev模式debug输出
+      console.log(validate.error)
+
       return false
     }
     return req.body
