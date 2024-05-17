@@ -12,7 +12,7 @@ router.post('/', async (req: Request, res) => {
     sortBy: string
     sortType: 'DESC' | 'ASC'
   }>({
-    limit: Joi.number().min(0).default(0),
+    limit: Joi.number().min(0).max(100).default(20),
     offset: Joi.number().min(0).max(0).default(0),
     sortBy: Joi.string().default('id'),
     sortType: Joi.string().valid('DESC', 'ASC').default('ASC')
@@ -27,6 +27,7 @@ router.post('/', async (req: Request, res) => {
   const { limit, offset, sortBy, sortType } = body
 
   const users = await Users.findAll({
+    attributes: { exclude: ['password'] },
     limit: limit,
     offset: offset,
     order: [[sortBy, sortType]]

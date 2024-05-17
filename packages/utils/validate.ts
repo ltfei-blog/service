@@ -16,7 +16,7 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
 
       return false
     }
-    return req.body
+    return validate.value
   }
 
   next()
