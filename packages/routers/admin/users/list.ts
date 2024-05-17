@@ -38,10 +38,15 @@ router.post('/', async (req: Request, res) => {
     })
   })
 
+  const count = await Users.count()
+
   users &&
     res.send({
       status: 200,
-      data: users.map((e) => e.toJSON())
+      data: {
+        count,
+        list: users.map((e) => e.toJSON())
+      }
     })
 })
 
