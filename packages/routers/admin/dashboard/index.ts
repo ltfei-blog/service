@@ -1,23 +1,31 @@
 import { Router } from 'express'
-import { Articles, ArticlesAudit, Comments, Users } from '@ltfei-blog/service-db'
+import {
+  Articles,
+  ArticlesAudit,
+  Comments,
+  Users,
+  sequelize
+} from '@ltfei-blog/service-db'
 import { PERMISSIONS, getUserPermission } from '@ltfei-blog/service-permission'
 import type { Request } from '@ltfei-blog/service-app/types'
-import { Model, ModelCtor, ModelStatic, Op } from 'sequelize'
+import { Model, ModelStatic, Op } from 'sequelize'
 import os from 'os'
+import { getConfig } from '@ltfei-blog/service-config'
+
+interface Count {
+  count: number
+  new: number
+  audit: number
+}
 
 interface Data {
-  sql: {}
-  article: {
-    count: number
-    new: number
-    audit: number
+  article: Count
+  comment: Count
+  user: Count
+  sql: {
+    version: string
+    sqlType: string
   }
-  comment: {
-    count: number
-    new: number
-    audit: number
-  }
-  user: {}
   system: {
     arch: string
     platform: NodeJS.Platform
@@ -116,6 +124,22 @@ const getSystem = () => {
   }
 }
 
+const getSql = async (): Promise<Data['sql']> => {
+  const [err, result] = await sequelize.query('select version() as version;')
+  type Result = [
+    {
+      version: string
+    }
+  ]
+  const version = (result as Result)[0].version
+  const sqlType = await getConfig('sql', 'type')
+
+  return {
+    sqlType,
+    version
+  }
+}
+
 router.get('/', async (req: Request, res) => {
   const user = req.auth
   const data: Partial<Data> = {}
@@ -137,6 +161,7 @@ router.get('/', async (req: Request, res) => {
   }
 
   data.system = getSystem()
+  data.sql = await getSql()
 
   res.send({
     status: 200,
