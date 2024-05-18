@@ -13,7 +13,7 @@ router.post('/', async (req: Request, res) => {
     sortType: 'DESC' | 'ASC'
   }>({
     limit: Joi.number().min(0).max(100).default(20),
-    offset: Joi.number().min(0).max(0).default(0),
+    offset: Joi.number().min(0).default(0),
     sortBy: Joi.string().default('id'),
     sortType: Joi.string().valid('DESC', 'ASC').default('ASC')
   })
@@ -38,13 +38,13 @@ router.post('/', async (req: Request, res) => {
     })
   })
 
-  const count = await Users.count()
+  const total = await Users.count()
 
   users &&
     res.send({
       status: 200,
       data: {
-        count,
+        total,
         list: users.map((e) => e.toJSON())
       }
     })
