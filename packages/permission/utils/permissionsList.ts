@@ -120,7 +120,7 @@ export const PERMISSIONS = {
    */
   admin_article: permission('admin_article', 2),
   admin_articleAdd: permission('admin_articleAdd', 2),
-  admin_articleEdit: permission('admin_articleEdit', 2),
+  admin_articleUpdate: permission('admin_articleUpdate', 2),
   admin_articleDelete: permission('admin_articleDelete', 2),
   admin_articleList: permission('admin_articleList', 2),
   admin_articleAudit: permission('admin_articleAudit', 2),
@@ -133,7 +133,7 @@ export const PERMISSIONS = {
    * - 审核评论
    */
   admin_comment: permission('admin_comment', 2),
-  admin_commentEdit: permission('admin_commentEdit', 2),
+  admin_commentUpdate: permission('admin_commentUpdate', 2),
   admin_commentList: permission('admin_commentList', 2),
   admin_commentAudit: permission('admin_commentAudit', 2),
 
@@ -147,7 +147,7 @@ export const PERMISSIONS = {
   admin_user: permission('admin_user', 2),
   admin_userAdd: permission('admin_userAdd', 2),
   admin_userDelete: permission('admin_userDelete', 2),
-  admin_userEdit: permission('admin_userEdit', 2),
+  admin_userUpdate: permission('admin_userUpdate', 2),
   admin_userList: permission('admin_userList', 2),
 
   /**
@@ -157,5 +157,5 @@ export const PERMISSIONS = {
    */
   admin_setting: permission('admin_setting', 2),
   admin_settingList: permission('admin_settingList', 2),
-  admin_settingEdit: permission('admin_settingEdit', 2)
+  admin_settingUpdate: permission('admin_settingUpdate', 2)
 }
