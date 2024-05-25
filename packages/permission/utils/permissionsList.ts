@@ -165,6 +165,6 @@ export const PERMISSIONS = {
    * - 权限组权限管理
    */
   admin_role: permission('admin_role', 2),
-  admin_role_group: permission('admin_role_group', 2),
-  admin_role_permissions: permission('admin_role_permissions', 2)
+  admin_roleGroup: permission('admin_role_group', 2),
+  admin_rolePermissions: permission('admin_role_permissions', 2)
 }
