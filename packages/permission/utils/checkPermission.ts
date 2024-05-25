@@ -1,6 +1,6 @@
 import { Permission } from './permissionsList'
 import { recursivePermissionGroup } from './recursivePermissionGroup'
-import { getPermissionGroupPermissions } from '../sql/getPermissionGroupPermissions'
+import { getPermissionGroupPermissions } from '../sql/permissionGroupPermissions'
 
 /**
  * 匹配权限

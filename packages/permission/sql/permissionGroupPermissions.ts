@@ -25,6 +25,32 @@ export const getPermissionGroupPermissions = async (group: number) => {
 }
 
 /**
+ * 设置权限组的某个权限
+ */
+export const setPermission = async (group: number, key: string, value: number) => {
+  const [instance, created] = await Permissions.findOrCreate({
+    defaults: {
+      key,
+      value,
+      group,
+      create_time: Date.now()
+    },
+    where: {
+      group,
+      key
+    }
+  })
+
+  if (!created) {
+    instance.update({
+      value
+    })
+  }
+
+  updatePermissionGroupPermissions(group)
+}
+
+/**
  * 更新缓存
  */
 export const updatePermissionGroupPermissions = (group: number) => {
