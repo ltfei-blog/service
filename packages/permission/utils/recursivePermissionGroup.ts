@@ -2,7 +2,7 @@ import type { PermissionGroupsTable } from '@ltfei-blog/service-db'
 import { getPermissionGroup } from '../sql/getPermissionGroup'
 
 /**
- * 递归查询权限组
+ * 递归查询权限组(包含继承的权限组)
  */
 export const recursivePermissionGroup = async (id: number) => {
   const res: PermissionGroupsTable[] = []
