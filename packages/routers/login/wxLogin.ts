@@ -8,6 +8,7 @@ import { loginStatus, LoginQueue } from '@ltfei-blog/service-db'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
 import { checkUuid, generateRandomString } from '@ltfei-blog/service-utils/loginApi'
 import { getConfig } from '@ltfei-blog/service-config'
+import { app as logger } from '@ltfei-blog/service-utils/log'
 
 const router = Router()
 
@@ -115,10 +116,17 @@ router.post(
   async (req: LoginRequest, res) => {
     const { uuid } = req.body
 
-    const buffer = await getUnlimited(uuid)
+    try {
+      const buffer = await getUnlimited(uuid)
 
-    res.type('image/jpeg')
-    res.send(buffer)
+      res.type('image/jpeg')
+      res.send(buffer)
+    } catch (e) {
+      logger.error(e)
+      res.send({
+        status: 500
+      })
+    }
   }
 )
 
