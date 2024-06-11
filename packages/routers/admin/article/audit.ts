@@ -50,4 +50,24 @@ router.post('/list', async (req: Request, res) => {
   })
 })
 
+router.get('/detail', async (req, res) => {
+  const id = req.query.id as string
+  if (!id) {
+    return res.send({
+      status: 403
+    })
+  }
+
+  const articles = await ArticlesAudit.findOne({
+    where: {
+      id
+    }
+  })
+
+  res.send({
+    status: 200,
+    data: articles
+  })
+})
+
 export default router
