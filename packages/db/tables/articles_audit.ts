@@ -20,12 +20,18 @@ type Table = {
   last_edit_time: number
   type: 'edit' | 'add'
   /**
-   * 修改文章时为文章id，发布文章时在审核通过后设置为文章id
+   * 文章id
+   * 修改时直接设置为文章id，发布时在审核通过后设置为文章id
    */
   articles_id: number
+  /**
+   * 审核人id
+   */
   audit_id: number
   cause: string
 }
+
+export { Table as ArticlesAuditTable }
 
 export const ArticlesAudit = sequelize.define<Model<Table, Table>>(
   'articles_audit',

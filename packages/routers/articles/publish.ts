@@ -2,6 +2,8 @@ import { Router } from 'express'
 import { ArticlesAudit, Articles, ArticlesSave } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
+import { articlesAudit } from '@ltfei-blog/service-utils/sql/articles'
+import { getUserPermission, PERMISSIONS } from '@ltfei-blog/service-permission'
 
 const router = Router()
 
@@ -104,51 +106,14 @@ router.post('/', async (req: Request, res) => {
   /**
    * 如果设置无需审核，或用户有 无需审核 权限，则自动通过审核
    */
-  // todo: dev环境暂时全部直接通过
-  if (true) {
-    let id = articlesId
-    if (type == 'add') {
-      const result = await Articles.create({
-        title,
-        desc,
-        cover,
-        content,
-        author: auth.id,
-        create_time: Date.now(),
-        status: 1
-      })
-
-      id = result.toJSON().id
-    } else if (type == 'edit') {
-      await Articles.update(
-        {
-          title,
-          desc,
-          cover,
-          content,
-          last_edit_time: Date.now()
-        },
-        {
-          where: {
-            id: articlesId
-          }
-        }
-      )
-    }
-    // 修改审核表的审核状态和审核人id
-    ArticlesAudit.update(
-      {
-        status: 1,
-        articles_id: id,
-        audit_id: -1,
-        cause: '自动通过'
-      },
-      {
-        where: {
-          id: auditId
-        }
-      }
-    )
+  const permission = await getUserPermission(
+    auth.id,
+    PERMISSIONS.creator_publishArticleSkipAudit
+  )
+  if (permission == 1) {
+    const id = await articlesAudit(auditId, 1, '自动通过', -1, {
+      articlesAudit: result
+    })
     // 直接返回文章id
     return res.send({
       status: 200,
@@ -162,6 +127,7 @@ router.post('/', async (req: Request, res) => {
   res.send({
     status: 200,
     data: {
+      audit: true,
       auditId: auditId
     }
   })

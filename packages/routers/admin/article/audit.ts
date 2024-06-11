@@ -70,4 +70,32 @@ router.get('/detail', async (req, res) => {
   })
 })
 
+router.post('/audit', (req: Request, res) => {
+  const body = req.validateBody<{
+    id: number
+    cause: string
+    status: number
+  }>({
+    id: Joi.number().integer().min(0),
+    cause: Joi.string(),
+    status: Joi.number().integer().min(0).max(100)
+  })
+
+  if (!body) {
+    return res.send({
+      status: 403
+    })
+  }
+
+  const user = req.auth
+
+  const { cause, id, status } = body
+
+  const articlesAudit = ArticlesAudit.findOne({
+    where: {
+      id
+    }
+  })
+})
+
 export default router
