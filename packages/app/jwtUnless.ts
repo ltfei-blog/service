@@ -4,7 +4,7 @@ const paths: string[] = [
   // '/login/login/qqConnectLogin',
   // '/login/login/getStatus',
   // '/login/wxLogin/',
-  // '/login/member/get',
+  '/users/member/get',
   '/login',
   // '/users/member/getPost',
   '/articles/list',
