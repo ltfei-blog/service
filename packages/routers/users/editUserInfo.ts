@@ -18,7 +18,7 @@ const schema = Joi.object({
   avatar: Joi.string(),
   city: Joi.string().max(5),
   gender: Joi.number().allow(1).allow(0).allow(2),
-  desc: Joi.string().min(1).max(50)
+  desc: Joi.string().min(1).max(50).allow(null)
 })
 
 router.post('/editUserInfo', async (req: Request, res) => {
