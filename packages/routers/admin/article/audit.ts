@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { ArticlesAudit } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
+import { articlesAudit } from '@ltfei-blog/service-utils/sql/articles'
 
 const router = Router()
 
@@ -31,6 +32,11 @@ router.post('/list', async (req: Request, res) => {
     limit: limit,
     offset: offset,
     order: [[sortBy, sortType]]
+  }).catch((err: Error) => {
+    res.send({
+      status: 500,
+      msg: err.message
+    })
   })
 
   const total = await ArticlesAudit.count()
@@ -40,14 +46,15 @@ router.post('/list', async (req: Request, res) => {
     }
   })
 
-  res.send({
-    status: 200,
-    data: {
-      total,
-      unauditedCount,
-      list: articlesAudit.map((e) => e.toJSON())
-    }
-  })
+  articlesAudit &&
+    res.send({
+      status: 200,
+      data: {
+        total,
+        unauditedCount,
+        list: articlesAudit.map((e) => e.toJSON())
+      }
+    })
 })
 
 router.get('/detail', async (req, res) => {
@@ -70,15 +77,15 @@ router.get('/detail', async (req, res) => {
   })
 })
 
-router.post('/audit', (req: Request, res) => {
+router.post('/audit', async (req: Request, res) => {
   const body = req.validateBody<{
     id: number
     cause: string
     status: number
   }>({
-    id: Joi.number().integer().min(0),
-    cause: Joi.string(),
-    status: Joi.number().integer().min(0).max(100)
+    id: Joi.number().integer().min(0).required(),
+    cause: Joi.string().allow(''),
+    status: Joi.number().integer().min(0).max(100).required()
   })
 
   if (!body) {
@@ -91,10 +98,24 @@ router.post('/audit', (req: Request, res) => {
 
   const { cause, id, status } = body
 
-  const articlesAudit = ArticlesAudit.findOne({
-    where: {
-      id
-    }
+  if (status == 1) {
+    await articlesAudit(id, status, cause, user.id)
+  } else {
+    await ArticlesAudit.update(
+      {
+        cause,
+        status
+      },
+      {
+        where: {
+          id
+        }
+      }
+    )
+  }
+
+  res.send({
+    status: 200
   })
 })
 

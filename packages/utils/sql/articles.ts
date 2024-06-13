@@ -68,14 +68,23 @@ const getArticlesAudit = async (id: number) => {
   return articlesAudit
 }
 
+/**
+ * 文章通过审核
+ * @param id 审核表的id
+ * @param status 要修改的状态
+ * @param cause 原因
+ * @param auditId 审核人id
+ * @param model 已经查询的模型
+ * @returns 文章id
+ */
 export const articlesAudit = async (
   id: number,
   status: number,
   cause: string,
   auditId: number,
-  model?: { articlesAudit?: Model<ArticlesAuditTable> }
+  model?: { articlesAuditModel?: Model<ArticlesAuditTable> }
 ) => {
-  const articlesAudit = model.articlesAudit || (await getArticlesAudit(id))
+  const articlesAudit = model?.articlesAuditModel || (await getArticlesAudit(id))
   const { type, title, desc, cover, content, author, articles_id } =
     articlesAudit.toJSON()
 

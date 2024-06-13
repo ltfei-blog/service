@@ -112,7 +112,7 @@ router.post('/', async (req: Request, res) => {
   )
   if (permission == 1) {
     const id = await articlesAudit(auditId, 1, '自动通过', -1, {
-      articlesAudit: result
+      articlesAuditModel: result
     })
     // 直接返回文章id
     return res.send({
