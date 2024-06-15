@@ -31,6 +31,10 @@ type Table = {
    */
   status: number
   /**
+   * 处理人id
+   */
+  audit_user_id: number
+  /**
    * 备注(由审核人员填写，会向用户展示)
    */
   remarks: string
@@ -75,6 +79,7 @@ export const Reports = sequelize.define<Model<Table, Table>, Table>(
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
+    audit_user_id: DataTypes.INTEGER,
     create_time: DataTypes.BIGINT,
     processing_time: DataTypes.BIGINT
   },
