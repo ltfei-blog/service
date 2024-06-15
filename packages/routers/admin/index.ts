@@ -4,6 +4,7 @@ import dashboard from './dashboard/'
 import users from './users/'
 import role from './role/'
 import article from './article/'
+import report from './report/'
 
 const router = Router()
 
@@ -12,5 +13,6 @@ router.use('/dashboard', dashboard)
 router.use('/users', auth(PERMISSIONS.admin_user), users)
 router.use('/role', auth(PERMISSIONS.admin_role), role)
 router.use('/article', auth(PERMISSIONS.admin_article), article)
+router.use('/report', auth(PERMISSIONS.admin_reportProcessing), report)
 
 export default router

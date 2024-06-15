@@ -34,7 +34,14 @@ type Table = {
    * 备注(由审核人员填写，会向用户展示)
    */
   remarks: string
+  /**
+   * 举报发起时间
+   */
   create_time: number
+  /**
+   * 举报处理时间
+   */
+  processing_time: number
 }
 
 export const causeType = [
@@ -68,7 +75,8 @@ export const Reports = sequelize.define<Model<Table, Table>, Table>(
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
-    create_time: DataTypes.BIGINT
+    create_time: DataTypes.BIGINT,
+    processing_time: DataTypes.BIGINT
   },
   {
     timestamps: false,
