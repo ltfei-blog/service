@@ -3,6 +3,7 @@ import type { Request } from '@ltfei-blog/service-app/types'
 import { Articles, Users, Likes, sequelize } from '@ltfei-blog/service-db'
 import { parseMarkdown } from '@ltfei-blog/service-utils/parseMarkdown'
 import { insertBrowsingHistory } from '@ltfei-blog/service-utils/browsingHistory'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -37,7 +38,7 @@ router.post('/:id', async (req: Request, res) => {
       ]
     ],
     where: {
-      status: 1,
+      status: keys.status.normal,
       id
     },
     include: [

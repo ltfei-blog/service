@@ -9,6 +9,7 @@ import {
 import { Op } from 'sequelize'
 import type { Request } from '@ltfei-blog/service-app/types'
 import joi from 'joi'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -118,7 +119,7 @@ router.post('/getPost', async (req: Request, res) => {
     ],
     where: {
       author: id,
-      status: 1,
+      status: keys.status.normal,
       create_time: {
         [Op.lt]: laseMinTime
       }
@@ -207,7 +208,7 @@ router.post('/getLikes', async (req: Request, res) => {
         as: 'user_likes_data',
         required: false,
         where: {
-          status: 1
+          status: keys.status.normal
         },
         include: [{ model: Users, as: 'author_data' }],
         attributes: [

@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { ArticlesSave, Articles } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -32,7 +33,7 @@ router.post('/', async (req: Request, res) => {
     })
   }
 
-  if (type == 'edit' && !editId) {
+  if (type == keys.articlesSave.type.edit && !editId) {
     return res.send({
       status: 403
     })
@@ -43,12 +44,12 @@ router.post('/', async (req: Request, res) => {
   /**
    * 编辑文章 验证作者
    */
-  if (type == 'edit') {
+  if (type == keys.articlesSave.type.edit) {
     const article = Articles.findOne({
       where: {
         author: auth.id,
         id: editId,
-        status: 1
+        status: keys.status.normal
       }
     })
     if (!article) {
@@ -64,7 +65,7 @@ router.post('/', async (req: Request, res) => {
   const editing = await ArticlesSave.findOne({
     where: {
       author: auth.id,
-      status: 1
+      status: keys.articlesSave.status.normal
     }
   })
   const data = {
@@ -74,7 +75,7 @@ router.post('/', async (req: Request, res) => {
     cover,
     content,
     type,
-    status: 1
+    status: keys.articlesSave.status.normal
   }
   if (editing) {
     // 有正在编辑的草稿直接覆盖

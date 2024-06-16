@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { ArticlesSave, Articles } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -28,7 +29,7 @@ router.post('/', async (req: Request, res) => {
   const auth = req.auth
   const editing = await ArticlesSave.findOne({
     where: {
-      status: 1,
+      status: keys.status.normal,
       author: auth.id,
       type,
       articles_id: editId
@@ -78,7 +79,7 @@ router.post('/', async (req: Request, res) => {
       where: {
         author: auth.id,
         id: editId,
-        status: 1
+        status: keys.status.normal
       }
     })
     if (!article) {

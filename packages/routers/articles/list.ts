@@ -2,6 +2,7 @@ import { Router } from 'express'
 import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
 import { findAll } from '@ltfei-blog/service-utils/sql/articles'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -24,7 +25,7 @@ router.post('/', async (req: Request, res) => {
 
   const results = await findAll(
     {
-      status: 1
+      status: keys.status.normal
     },
     Number(cursor),
     Number(count)

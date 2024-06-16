@@ -4,6 +4,7 @@ import multer from 'multer'
 import { putObject } from '@ltfei-blog/service-utils/tencentCos'
 import type { Request } from '@ltfei-blog/service-app/types'
 import { Uploads } from '@ltfei-blog/service-db'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -64,7 +65,7 @@ router.post(
         suffix,
         user: user.id,
         upload_type: type,
-        status: 1,
+        status: keys.status.normal,
         create_time: Date.now()
       })
 

@@ -8,6 +8,7 @@ import {
   ArticlesAuditTable
 } from '@ltfei-blog/service-db'
 import { Model, WhereOptions } from 'sequelize'
+import { keys } from '@ltfei-blog/service-config'
 
 export const findAll = async (
   where: WhereOptions<ArticlesTable>,
@@ -89,7 +90,7 @@ export const articlesAudit = async (
     articlesAudit.toJSON()
 
   let insertId = articles_id
-  if (type == 'add') {
+  if (type == keys.articlesSave.type.add) {
     const result = await Articles.create({
       title,
       desc,
@@ -97,11 +98,11 @@ export const articlesAudit = async (
       content,
       author,
       create_time: Date.now(),
-      status: 1
+      status: keys.status.normal
     })
 
     insertId = result.toJSON().id
-  } else if (type == 'edit') {
+  } else if (type == keys.articlesSave.type.edit) {
     await Articles.update(
       {
         title,

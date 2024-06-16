@@ -9,6 +9,8 @@ type Table = {
   desc: string
   /**
    * - 1 正常
+   * - 10 锁定
+   * - 100 删除
    */
   status: number
   author: number

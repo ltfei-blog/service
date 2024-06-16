@@ -3,6 +3,7 @@ import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
 import { Articles, Users, sequelize } from '@ltfei-blog/service-db'
 import { Op } from 'sequelize'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -52,7 +53,7 @@ router.post('/search', async (req: Request, res) => {
       }
     ],
     where: {
-      status: 1,
+      status: keys.status.normal,
       [Op.or]: {
         content: {
           // 会自动转义特殊字符

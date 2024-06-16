@@ -11,6 +11,7 @@ import type { Request } from '@ltfei-blog/service-app/types'
 import { Model, ModelStatic, Op } from 'sequelize'
 import os from 'os'
 import { getConfig } from '@ltfei-blog/service-config'
+import { keys } from '@ltfei-blog/service-config'
 
 interface Count {
   count: number
@@ -67,10 +68,12 @@ const countModel = async (
 }
 
 const getArticle = async () => {
-  const { count, newCount } = await countModel(Articles, { status: 1 })
+  const { count, newCount } = await countModel(Articles, {
+    status: keys.status.normal
+  })
   const audit = await ArticlesAudit.count({
     where: {
-      status: 0
+      status: keys.articlesAudit.status.untreated
     }
   })
 

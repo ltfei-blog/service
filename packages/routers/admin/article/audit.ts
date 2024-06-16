@@ -3,6 +3,7 @@ import { ArticlesAudit } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
 import { articlesAudit } from '@ltfei-blog/service-utils/sql/articles'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -42,7 +43,7 @@ router.post('/list', async (req: Request, res) => {
   const total = await ArticlesAudit.count()
   const unauditedCount = await ArticlesAudit.count({
     where: {
-      status: 0
+      status: keys.articlesAudit.status.untreated
     }
   })
 

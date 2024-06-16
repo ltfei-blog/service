@@ -4,6 +4,7 @@ import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
 import { articlesAudit } from '@ltfei-blog/service-utils/sql/articles'
 import { getUserPermission, PERMISSIONS } from '@ltfei-blog/service-permission'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -76,7 +77,7 @@ router.post('/', async (req: Request, res) => {
    */
   await ArticlesSave.update(
     {
-      status: 2
+      status: keys.articlesSave.status.submitted
     },
     {
       where: {
@@ -97,7 +98,7 @@ router.post('/', async (req: Request, res) => {
     content,
     type,
     articles_id: articlesId,
-    status: 0,
+    status: keys.articlesAudit.status.untreated,
     author: auth.id
   })
 
@@ -111,9 +112,15 @@ router.post('/', async (req: Request, res) => {
     PERMISSIONS.creator_publishArticleSkipAudit
   )
   if (permission == 1) {
-    const id = await articlesAudit(auditId, 1, '自动通过', -1, {
-      articlesAuditModel: result
-    })
+    const id = await articlesAudit(
+      auditId,
+      keys.articlesAudit.status.allow,
+      '自动通过',
+      -1,
+      {
+        articlesAuditModel: result
+      }
+    )
     // 直接返回文章id
     return res.send({
       status: 200,
