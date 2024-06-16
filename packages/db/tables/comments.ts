@@ -16,6 +16,8 @@ type Table = {
   last_edit_time: number
 }
 
+export { Table as CommentTable }
+
 export const Comments = sequelize.define<
   Model<
     {
