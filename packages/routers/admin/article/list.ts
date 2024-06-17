@@ -2,6 +2,7 @@ import { Router } from 'express'
 import type { Request } from '@ltfei-blog/service-app/types'
 import Joi from 'joi'
 import { Articles } from '@ltfei-blog/service-db'
+import { keys } from '@ltfei-blog/service-config'
 
 const router = Router()
 
@@ -45,6 +46,7 @@ router.post('/', async (req: Request, res) => {
       status: 200,
       data: {
         total,
+        keys: keys.articles,
         list: articles.map((e) => e.toJSON())
       }
     })
