@@ -6,31 +6,27 @@ import { getComments } from '@ltfei-blog/service-utils/sql/comment'
 
 const router = Router()
 
-interface Body {
-  articleId: number
-}
-
-const schema = Joi.object({
-  articleId: Joi.number().required()
-})
-
 router.post('/list', async (req: Request, res) => {
-  const validate = schema.validate(req.body)
+  const body = req.validateBody<{
+    articleId: number
+  }>({
+    articleId: Joi.number().required()
+  })
 
-  if (validate.error) {
+  if (!body) {
     return res.send({
       status: 403
     })
   }
   const auth = req.auth
 
-  const { articleId } = req.body as Body
+  const { articleId } = body
 
   const comments = await getComments(
     {
       article_id: articleId
     },
-    auth.id
+    auth?.id
   )
 
   res.send({
