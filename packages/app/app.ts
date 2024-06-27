@@ -61,6 +61,14 @@ app.use(
   }
 )
 
+// logger
+app.use(baseUrl, (req: Request, res, next) => {
+  const user = req.auth && `[user:${req.auth.id}]`
+
+  logger.info(`[${req.method}] ${user || ''} ${req.path}`)
+  next()
+})
+
 // 身份验证
 app.use(baseUrl, (req: Request, res, next) => {
   const auth = req.auth

@@ -21,7 +21,8 @@ const connect = async () => {
     const storage = await getLocalConfig('sqlite', 'storage')
     return new Sequelize({
       dialect: 'sqlite',
-      storage
+      storage,
+      logging: logger.info.bind(logger)
     })
   }
 }
