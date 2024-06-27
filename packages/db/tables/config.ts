@@ -42,7 +42,6 @@ export const Config = sequelize.define<Model<Table, Table>>(
         unique: true
       },
       {
-        name: 'indexes',
         fields: ['key', 'name', 'create_time', 'last_edit_time']
       }
     ]
