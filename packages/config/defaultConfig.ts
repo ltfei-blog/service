@@ -27,5 +27,11 @@ export default <Config>{
   upload: {
     type: 'local',
     baseUrl: 'upload'
+  },
+  articles: {
+    exception: {
+      version: '\\w\\b\\w',
+      data: '{status: 200, data: []}'
+    }
   }
 }

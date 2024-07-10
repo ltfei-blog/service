@@ -54,6 +54,12 @@ export interface Config {
     Region: string
     host: string
   }
+  articles: {
+    exception: {
+      version: string
+      data: string
+    }
+  }
 }
 
 export type GetConfig = {
