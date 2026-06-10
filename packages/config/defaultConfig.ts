@@ -1,10 +1,13 @@
 import { Config } from './types'
+import { v4 as uuidV4 } from 'uuid'
 
 export default <Config>{
   app: {
     port: 3000,
     cors: '*',
-    baseUrl: '/'
+    baseUrl: '/',
+    jwtSecret: uuidV4(),
+    jwtRefreshSecret: uuidV4()
   },
   login_method: {
     qq_connect: {

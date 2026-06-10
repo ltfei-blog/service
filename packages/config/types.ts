@@ -5,6 +5,7 @@ export interface Config {
     cors: string
     baseUrl: string
     jwtSecret: string
+    jwtRefreshSecret: string
   }
   login_method: {
     qq_connect: {

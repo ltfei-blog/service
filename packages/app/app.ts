@@ -8,9 +8,9 @@ import { app as logger } from '@ltfei-blog/service-utils/log'
 import cors from 'cors'
 import { Request } from './types'
 import './procexit'
-import { createUserToken } from '@ltfei-blog/service-utils/token'
+import { createToken } from '@ltfei-blog/service-utils/token'
 import { validate } from '@ltfei-blog/service-utils/validate'
-const t = await createUserToken({
+const t = await createToken({
   id: 1
 })
 console.log(t)

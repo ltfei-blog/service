@@ -2,6 +2,7 @@ import { Router } from 'express'
 import login from './login'
 import wxLogin from './wxLogin'
 import qqConnectLogin from './qqConnectLogin'
+import refreshToken from './refreshToken'
 // import { auth, PERMISSIONS } from '@ltfei-blog/service-permission'
 
 const router = Router()
@@ -20,5 +21,6 @@ router.use(
 )
 
 router.use('/qqConnectLogin', qqConnectLogin)
+router.use('/refreshToken', refreshToken)
 
 export default router

@@ -7,7 +7,7 @@ import {
   checkUuid
 } from '@ltfei-blog/service-utils/loginApi'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
-import { createUserToken } from '@ltfei-blog/service-utils/token'
+import { createToken } from '@ltfei-blog/service-utils/token'
 import { findOrCreateUser } from '@ltfei-blog/service-utils/findOrCreateUser'
 
 const router = Router()
@@ -108,14 +108,19 @@ router.post(
       auth_method: 'qq_connect'
     })
 
-    const token = await createUserToken({
+    const { userToken, refreshToken } = await createToken({
       id: user.toJSON().id
     })
 
     res.send({
       status: 200,
       data: {
-        token,
+        /**
+         * @deprecated
+         */
+        token: userToken,
+        userToken,
+        refreshToken,
         type: created ? 'register' : 'login'
       }
     })

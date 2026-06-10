@@ -2,7 +2,7 @@ import { Router } from 'express'
 import Joi from 'joi'
 import { checkLogin } from '@ltfei-blog/service-utils/wx/checkLogin'
 import { findOrCreateUser } from '@ltfei-blog/service-utils/findOrCreateUser'
-import { createUserToken } from '@ltfei-blog/service-utils/token'
+import { createToken } from '@ltfei-blog/service-utils/token'
 import { getUnlimited } from '@ltfei-blog/service-utils/wx/getUnlimited'
 import { loginStatus, LoginQueue } from '@ltfei-blog/service-db'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
@@ -97,7 +97,7 @@ router.post('/login', checkUuid(loginStatus.scanCode), async (req: LoginRequest,
     auth_method: 'wx_miniprogram'
   })
 
-  const token = await createUserToken({
+  const token = await createToken({
     id: userId
   })
 

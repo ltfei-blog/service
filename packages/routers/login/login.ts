@@ -8,7 +8,7 @@ import {
   generateRandomString
 } from '@ltfei-blog/service-utils/loginApi'
 import type { LoginRequest } from '@ltfei-blog/service-router/types'
-import { createUserToken } from '@ltfei-blog/service-utils/token'
+import { createToken } from '@ltfei-blog/service-utils/token'
 import { findOrCreateUser } from '@ltfei-blog/service-utils/findOrCreateUser'
 
 const router = Router()
@@ -69,14 +69,19 @@ router.post('/getStatus', checkUuid(), async (req: LoginRequest, res) => {
     await req.UpdataLoginQueue({
       ineffective: true
     })
-    const token = await createUserToken({
+    const { refreshToken, userToken } = await createToken({
       id: user_id
     })
     return res.send({
       status: 200,
       data: {
         status,
-        token
+        /**
+         * @deprecated
+         */
+        token: userToken,
+        userToken,
+        refreshToken
       }
     })
   }
