@@ -3,6 +3,7 @@ import login from './login'
 import wxLogin from './wxLogin'
 import qqConnectLogin from './qqConnectLogin'
 import refreshToken from './refreshToken'
+import accountLogin from './accountLogin'
 // import { auth, PERMISSIONS } from '@ltfei-blog/service-permission'
 
 const router = Router()
@@ -22,5 +23,6 @@ router.use(
 
 router.use('/qqConnectLogin', qqConnectLogin)
 router.use('/refreshToken', refreshToken)
+router.use('/accountLogin', accountLogin)
 
 export default router
