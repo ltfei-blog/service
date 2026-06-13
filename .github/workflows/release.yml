@@ -1,0 +1,49 @@
+name: Build & Release
+
+# 仅在推送 tag 时触发
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉取代码
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 安装 Node.js 20
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm' # 缓存 pnpm 依赖，加速构建
+
+      # 3. 安装 pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      # 4. 安装依赖
+      - name: Install dependencies
+        run: pnpm i
+
+      # 5. 执行构建
+      - name: Run build
+        run: pnpm run build
+
+      # 6. 打包 dist 为 dist.zip
+      - name: Zip dist folder
+        run: zip -r ltfei-blog-service-release.zip ./dist/*
+
+      # 创建 Release 并上传 zip 包
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ltfei-blog-service-release.zip
+          generate_release_notes: true # 自动生成更新日志
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
