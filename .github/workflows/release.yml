@@ -5,6 +5,9 @@ on:
   push:
     tags:
       - 'v*'
+  branches:
+    - dev
+    - main
 
 jobs:
   build:
@@ -43,6 +46,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          prerelease: ${{ contains(github.ref_name, 'dev') }}
           files: ltfei-blog-service-release.zip
           generate_release_notes: true # 自动生成更新日志
         env:
