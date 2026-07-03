@@ -56,6 +56,10 @@ export interface Config {
     host: string
   }
   articles: {
+    /**
+     * 特殊情形文章
+     * 可以针对前端传入特定的版本返回预设好的文章
+     */
     exception: {
       version: string
       data: string
