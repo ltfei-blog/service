@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { Comments } from '@ltfei-blog/service-db'
+import { Articles } from '@ltfei-blog/service-db'
 import type { Request } from '@ltfei-blog/service-app/types'
 import { Op } from 'sequelize'
 import { mapComments } from '@ltfei-blog/service-utils/mapComments'
@@ -29,7 +29,10 @@ router.post('/', async (req: Request, res) => {
     ]
   })
 
-  const list = mapComments(comments.map((e) => e.toJSON()))
+  const list = mapComments(
+    comments.map((e) => e.toJSON()),
+    -1
+  )
 
   res.send({
     status: 200,

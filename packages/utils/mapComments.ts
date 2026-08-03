@@ -56,7 +56,7 @@ export interface SqlResult {
   }
 }
 
-export const mapComments = (comments: SqlResult[]): Comment[] => {
+export const mapComments = (comments: SqlResult[], articleAuthor: number): Comment[] => {
   const results: Comment[] = []
 
   const replys: SqlResult[] = []
@@ -67,7 +67,7 @@ export const mapComments = (comments: SqlResult[]): Comment[] => {
     if (e.reply_id != 0 && e.reply_id != null) {
       return replys.push(e)
     }
-    results.push({ ...mapKeys(e), reply: [] })
+    results.push({ ...mapKeys(e, articleAuthor), reply: [] })
   })
 
   // 处理回复
@@ -80,14 +80,14 @@ export const mapComments = (comments: SqlResult[]): Comment[] => {
       return
     }
 
-    result.reply?.push(mapKeys(e))
+    result.reply?.push(mapKeys(e, articleAuthor))
     return
   })
 
   return results
 }
 
-export const mapKeys = (data: SqlResult): CommentReply => {
+export const mapKeys = (data: SqlResult, articleAuthor: number): CommentReply => {
   return {
     id: data.id,
     content: data.content,
@@ -97,7 +97,7 @@ export const mapKeys = (data: SqlResult): CommentReply => {
     username: data.sender.username,
     likeCount: data.likes_count,
     liked: Boolean(data.liked),
-    isAuthor: false,
+    isAuthor: data.user_id == articleAuthor,
     replyCommentId: data.comment_id,
     replyToReplyId: data.reply_count,
     replyCount: data.reply_count

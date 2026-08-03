@@ -5,9 +5,20 @@ type Table = {
   id: number
   content: string
   user_id: number
+  /**
+   * 评论对应的文章id
+   */
   article_id: number
-  reply_id: number
-  comment_id: number
+  /**
+   * 回复的评论的id
+   * 如果当前为主评论，则为null
+   */
+  reply_id: number | null
+  /**
+   * 回复的主评论id
+   * 如果当前为主评论，则为null
+   */
+  comment_id: number | null
   /**
    * - 1 正常
    */
@@ -25,8 +36,8 @@ export const Comments = sequelize.define<
       content: string
       user_id: number
       article_id: number
-      reply_id: number
-      comment_id: number
+      reply_id: number | null
+      comment_id: number | null
       status: number
       create_time: number
       last_edit_time?: number
